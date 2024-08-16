@@ -16,7 +16,7 @@ const path = require('path')
 //подключение к БД PostreSQL
 const sequelize = require('./botrenthub/connections/db')
 const { Op } = require('sequelize')
-const {UserBot, Message, Conversation, } = require('./botrenthub/models/models');
+const {UserBot, Message, Conversation, Manager } = require('./botrenthub/models/models');
 
 //socket.io
 const {io} = require("socket.io-client")
@@ -118,9 +118,6 @@ bot.on('message', async (msg) => {
             } catch (error) {
                 console.log(error.message)
             }
-
-
-
         }
 
         //обработка сообщений    
@@ -130,7 +127,29 @@ bot.on('message', async (msg) => {
             
             } else {
 //----------------------------------------------------------------------------------------------------------------
-                //отправка сообщения   
+                //отправка сообщения  
+                
+                //добавление пользователя в БД WORKERS
+                const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
+                if (!userW) {
+                    await Manager.create({ 
+                        username: firstname, 
+                        userfamily: lastname, 
+                        chatId: chatId, 
+                        worklist: '',
+                        promoId: 0,
+                        from: 'Bot',
+                        avatar: ''
+                    })
+                    console.log('Пользователь добавлен в БД Rmanagers')
+                } else {
+                    console.log('Отмена операции! Пользователь уже существует в Rmanagers')
+                    // await Worker.update({ username: username }, {
+                    //     where: {
+                    //       chatId: chatId.toString(),
+                    //     },
+                    // });
+                }
 
                 //обработка пересылаемых сообщений
                 let str_text;
