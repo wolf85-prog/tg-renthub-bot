@@ -69,6 +69,23 @@ bot.on('message', async (msg) => {
                 console.log('Отмена добавления в БД. Пользователь уже существует')
             }
 
+            //добавление пользователя в БД WORKERS
+            const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
+            if (!userW) {
+                await Manager.create({ 
+                    username: firstname, 
+                    userfamily: lastname, 
+                    chatId: chatId, 
+                    worklist: '',
+                    promoId: 0,
+                    from: 'Bot',
+                    avatar: ''
+                })
+                console.log('Пользователь добавлен в БД Rmanagers')
+            } else {
+                console.log('Отмена операции! Пользователь уже существует в Rmanagers')
+            }
+
 
             //создание чата специалиста
             try {
