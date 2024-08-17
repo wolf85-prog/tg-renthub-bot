@@ -22,6 +22,8 @@ const {UserBot, Message, Conversation, Manager } = require('./botrenthub/models/
 const {io} = require("socket.io-client")
 const socketUrl = process.env.SOCKET_APP_URL
 
+const sendMyMessage = require('./botrenthub/common/sendMyMessage')
+
 //notion api
 // const { Client } = require("@notionhq/client");
 // const notion = new Client({ auth: process.env.NOTION_API_KEY });
