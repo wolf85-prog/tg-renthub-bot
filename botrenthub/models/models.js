@@ -1,7 +1,7 @@
 const sequelize = require('../connections/db')
 const {DataTypes} = require('sequelize')
 
-const UserBot = sequelize.define('ruserbot', {
+const UserBot = sequelize.define('userbot', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     firstname: {type: DataTypes.STRING},
     lastname: {type: DataTypes.STRING},
@@ -11,7 +11,7 @@ const UserBot = sequelize.define('ruserbot', {
     block: {type: DataTypes.BOOLEAN},
 })
 
-const Manager = sequelize.define('rmanager', {
+const Manager = sequelize.define('manager', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     userfamily: {type: DataTypes.STRING},
     username: {type: DataTypes.STRING},
@@ -33,7 +33,7 @@ const Manager = sequelize.define('rmanager', {
     great: {type: DataTypes.BOOLEAN},
 })
 
-const Message = sequelize.define('rmessage', {
+const Message = sequelize.define('message', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     conversationId: {type: DataTypes.STRING},
     senderId: {type: DataTypes.STRING},
@@ -46,11 +46,11 @@ const Message = sequelize.define('rmessage', {
     replyId: {type: DataTypes.STRING}, //id пересылаемого сообщения
 })
 
-const Conversation = sequelize.define('rconversation', {
+const Conversation = sequelize.define('conversation', {
     members: {type: DataTypes.ARRAY(DataTypes.STRING)},
 })
 
-const Distribution = sequelize.define('rdistribution', {
+const Distribution = sequelize.define('distribution', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
     text: {type: DataTypes.STRING}, //текст сообщения;
     image: {type: DataTypes.STRING}, //ссылка на картинку;
