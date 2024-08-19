@@ -189,7 +189,7 @@ bot.on('message', async (msg) => {
 
                 socket.emit("addUser", chatId)
 
-                socket.emit("sendMessageRent", {
+                socket.emit("sendMessage", {
                     senderId: chatId,
                     receiverId: chatTelegramId,
                     text: str_text,
