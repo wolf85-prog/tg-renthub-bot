@@ -22,7 +22,9 @@ const {UserBot, Message, Conversation, Manager } = require('./botrenthub/models/
 const {io} = require("socket.io-client")
 const socketUrl = process.env.SOCKET_APP_URL
 
-const sendMyMessage = require('./botrenthub/common/sendMyMessage')
+const sendMyMessage = require('./botrenthub/common/sendMyMessage');
+const getManagerNotion = require("./botrenthub/common/getManagerNotion");
+const addManager = require("./botrenthub/common/addManager");
 
 //notion api
 // const { Client } = require("@notionhq/client");
@@ -200,7 +202,23 @@ bot.on('message', async (msg) => {
                 })
 
                 // ответ бота
-                //await bot.sendMessage(chatId, 'Я принял ваш запрос!')          
+                //await bot.sendMessage(chatId, 'Я принял ваш запрос!')  
+                
+                //сохраниь в бд ноушен
+                const notion = await getManagerNotion(chatId)
+                console.log("notion specialist: ", notion)
+                
+                if (notion.length === 0) {
+                    //добавить специалиста
+                    const managerId = await addManager(fio, chatId)
+                    console.log('Менеджер успешно добавлен в Notion!', managerId)
+
+                    //добавить аватар
+                    //const res = await addAvatar(workerId, urlAvatar)
+                    //console.log("res upload avatar: ", res)
+                } else {
+                    console.log('Менеджер уже существует в Notion!')
+                }
             }
         }
 
