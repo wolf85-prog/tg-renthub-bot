@@ -223,13 +223,13 @@ bot.on('message', async (msg) => {
 
                     try {
                         const res = await Manager.update({
-                                fio: notion.fio,
-                                phone: notion.phone,
-                                city: notion.city,
-                                company: notion.companyId,
-                                doljnost: notion.doljnost,
-                                comteg: notion.comteg,
-                                comment: notion.comment,
+                                fio: notion[0].fio,
+                                phone: notion[0].phone,
+                                city: notion[0].city,
+                                company: notion[0].companyId,
+                                doljnost: notion[0].doljnost,
+                                comteg: notion[0].comteg,
+                                comment: notion[0].comment,
                             },
                             {
                                 where: {chatId: chatId.toString()}
