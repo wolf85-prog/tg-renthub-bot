@@ -229,7 +229,7 @@ bot.on('message', async (msg) => {
                             doljnost: notion.doljnost,
                         },
                         {
-                            where: {chatId: chatId}
+                            where: {chatId: chatId.toString()}
                         }) 
                     if (res) {
                         console.log('Менеджер обновлен в БД')    
