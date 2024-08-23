@@ -147,6 +147,12 @@ bot.on('message', async (msg) => {
             }
         }
 
+                // команда Добавить таблицу Претенденты
+        if (text === '/getmanager') {
+            const notion = await getManagerNotion(chatId)
+            console.log("notion specialist: ", notion)
+        }
+
         //обработка сообщений    
         if ((text || '')[0] !== '/' && text) {       
             if (text.startsWith("Reply")) {           
