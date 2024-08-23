@@ -31,6 +31,9 @@ router.get("/managers", managerController.managers);                // все м
 // router.get("/managers/cash/:id", managerController.managerCash);     // получить данные менеджера из БД
 // router.get("/managersall/cash", managerController.managerCashAll);     // получить всех менеджеров из БД
 
-
+//get COMPANYS
+router.get("/companys", managerController.companys);
+router.get("/company/:id", managerController.company);
+router.get("/company/name/:id", managerController.companyName);
 
 module.exports = router
