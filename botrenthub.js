@@ -222,17 +222,19 @@ bot.on('message', async (msg) => {
                     console.log('Менеджер уже существует в Notion!') 
                     const res = await Manager.update(
                         {
-                            name: notion.fio,
+                            fio: notion.fio,
                             phone: notion.phone,
                             city: notion.city,
                             company: notion.companyId,
                             doljnost: notion.doljnost,
+                            comteg: notion.comteg,
+                            comment: notion.comment,
                         },
                         {
                             where: {chatId: chatId.toString()}
                         }) 
                     if (res) {
-                        console.log('Менеджер обновлен в БД')    
+                        console.log('Менеджер обновлен в БД', res)    
                     } else {
                         console.log('Сбой обновления!')
                     }             
