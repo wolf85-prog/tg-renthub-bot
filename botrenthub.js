@@ -13,6 +13,11 @@ const fs = require('fs');
 const app = express();
 const path = require('path')
 
+app.use(express.json());
+app.use(cors());
+app.use(express.static(path.resolve(__dirname, 'static')))
+app.use('/', router)
+
 //подключение к БД PostreSQL
 const sequelize = require('./botrenthub/connections/db')
 const { Op } = require('sequelize')
