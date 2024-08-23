@@ -219,7 +219,18 @@ bot.on('message', async (msg) => {
                 console.log("notion specialist: ", notion)
                 
                 if (notion) {
-                    console.log('Менеджер уже существует в Notion!')                
+                    console.log('Менеджер уже существует в Notion!') 
+                    await Manager.update(
+                        {
+                            name: notion.fio,
+                            phone: notion.phone,
+                            city: notion.city,
+                            company: notion.companyId,
+                            doljnost: notion.doljnost,
+                        },
+                        {
+                            where: {chatId: chatId}
+                        })                  
                 } else {
                     //добавить специалиста
                     const managerId = await addManager(fio, chatId)
