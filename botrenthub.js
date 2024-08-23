@@ -220,7 +220,7 @@ bot.on('message', async (msg) => {
                 
                 if (notion) {
                     console.log('Менеджер уже существует в Notion!') 
-                    await Manager.update(
+                    const res = await Manager.update(
                         {
                             name: notion.fio,
                             phone: notion.phone,
@@ -230,7 +230,12 @@ bot.on('message', async (msg) => {
                         },
                         {
                             where: {chatId: chatId}
-                        })                  
+                        }) 
+                    if (res) {
+                        console.log('Менеджер обновлен в БД')    
+                    } else {
+                        console.log('Сбой обновления!')
+                    }             
                 } else {
                     //добавить специалиста
                     const managerId = await addManager(fio, chatId)
