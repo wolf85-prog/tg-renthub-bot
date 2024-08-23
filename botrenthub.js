@@ -12,6 +12,7 @@ const https = require('https');
 const fs = require('fs');
 const app = express();
 const path = require('path')
+const router = require('./botrenthub/routes/index')
 
 app.use(express.json());
 app.use(cors());
