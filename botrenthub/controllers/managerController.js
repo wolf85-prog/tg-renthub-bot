@@ -104,11 +104,11 @@ async function getManagers() {
                tgID: manager.properties.ID.rich_text[0]?.plain_text,
                phone: manager.properties["Телефон"].phone_number,
                comment: manager.properties["Комментарий"].rich_text[0]?.plain_text,
-               city: manager.properties["Город"].multi_select[0].name,
-               comteg: manager.properties["КомТег"].multi_select[0].name,
+               city: manager.properties["Город"].multi_select[0]?.name,
+               comteg: manager.properties["КомТег"].multi_select[0]?.name,
                bisnes: manager.properties["Сфера деятельности"].multi_select,
                projects: manager.properties["Проекты"].number,
-               doljnost: manager.properties["Должность"].select.name,
+               doljnost: manager.properties["Должность"].select?.name,
                companyId: manager.properties["Компания"].relation[0],
             };
         });
