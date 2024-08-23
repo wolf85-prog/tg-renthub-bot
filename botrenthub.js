@@ -160,11 +160,9 @@ bot.on('message', async (msg) => {
                 const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
                 if (!userW) {
                     await Manager.create({ 
-                        username: firstname, 
-                        userfamily: lastname, 
+                        fio: lastname + ' ' +firstname, 
                         chatId: chatId, 
                         worklist: '',
-                        promoId: 0,
                         from: 'Bot',
                         avatar: ''
                     })
