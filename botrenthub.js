@@ -70,6 +70,7 @@ bot.on('message', async (msg) => {
     try {
         // команда Старт
         if (text === '/start') {
+            // 1 (пользователь бота)
             //добавить пользователя в бд
             const user = await UserBot.findOne({where:{chatId: chatId.toString()}})
             if (!user) {
@@ -79,22 +80,58 @@ bot.on('message', async (msg) => {
                 console.log('Отмена добавления в БД. Пользователь уже существует')
             }
 
-            //добавление пользователя в БД WORKERS
-            const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
-            if (!userW) {
-                await Manager.create({ 
-                    username: firstname, 
-                    userfamily: lastname, 
-                    chatId: chatId, 
-                    worklist: '',
-                    promoId: 0,
-                    from: 'Bot',
-                    avatar: ''
-                })
-                console.log('Пользователь добавлен в БД Rmanagers')
+            // 2 (менеджер)
+            //поиск менеджера в ноушене
+            const notion = await getManagerNotion(parseInt(chatId))
+
+            if (notion) {
+                console.log('Менеджер уже существует в Notion!') 
+
+                //добавление пользователя в БД MANAGERS
+                const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
+                if (!userW) {
+                    await Manager.create({ 
+                        fio: notion[0].fio,
+                        phone: notion[0].phone,
+                        city: notion[0].city,
+                        company: notion[0].companyId,
+                        dojnost: notion[0].doljnost,
+                        comteg: notion[0].comteg,
+                        comment: notion[0].comment,
+                    })
+                    console.log('Пользователь добавлен в БД managers')
+                } else {
+                    console.log('Отмена операции! Пользователь уже существует в managers')   
+                }                     
+                                       
             } else {
-                console.log('Отмена операции! Пользователь уже существует в Rmanagers')
-            }
+                //поиск менеджера в бд
+                const user = await UserBot.findOne({where:{chatId: chatId.toString()}})
+
+                //добавить специалиста в ноушен
+                const fio = 'Неизвестный заказчик'
+                const managerId = await addManager(fio, chatId)
+                console.log('Менеджер успешно добавлен в Notion!', managerId)
+
+                //добавить аватар
+                //const res = await addAvatar(workerId, urlAvatar)
+                //console.log("res upload avatar: ", res)
+
+                //добавление пользователя в БД MANAGERS
+                const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
+                if (!userW) {
+                    await Manager.create({ 
+                        fio: 'Неизвестный заказчик', 
+                        chatId: chatId, 
+                        worklist: '',
+                        from: 'Bot',
+                        avatar: ''
+                    })
+                    console.log('Пользователь добавлен в БД managers')
+                } else {
+                    console.log('Отмена операции! Пользователь уже существует в managers')
+                }
+            }    
 
 
             //создание чата специалиста
@@ -163,60 +200,7 @@ bot.on('message', async (msg) => {
                 //отправка сообщения  
 
                 //сохраниь в бд ноушен
-                const notion = await getManagerNotion(parseInt(chatId))
-                //console.log("notion specialist: ", notion)
-
-                if (notion) {
-                    console.log('Менеджер уже существует в Notion!') 
-
-                    try {
-                        //добавление пользователя в БД WORKERS
-                        const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
-                        if (!userW) {
-                            await Manager.create({ 
-                                fio: notion[0].fio,
-                                phone: notion[0].phone,
-                                city: notion[0].city,
-                                company: notion[0].companyId,
-                                dojnost: notion[0].doljnost,
-                                comteg: notion[0].comteg,
-                                comment: notion[0].comment,
-                            })
-                            console.log('Пользователь добавлен в БД managers')
-                        } else {
-                            console.log('Отмена операции! Пользователь уже существует в managers')
-                            const res = await Manager.update({
-                                fio: notion[0].fio,
-                                phone: notion[0].phone,
-                                city: notion[0].city,
-                                company: notion[0].companyId,
-                                dojnost: notion[0].doljnost,
-                                comteg: notion[0].comteg,
-                                comment: notion[0].comment,
-                            },
-                            {
-                                where: {chatId: chatId.toString()}
-                            }) 
-                            console.log('Менеджер обновлен в БД', res)    
-                        }
-                           
-                    } catch (error) {
-                        console.log(error)
-                    }
-                               
-                } else {
-                    //добавление пользователя в БД
-                    const user = await UserBot.findOne({where:{chatId: chatId.toString()}})
-
-                    //добавить специалиста в ноушен
-                    const fio = user.dataValues.lastname ? user.dataValues.lastname + ' ' : '' + user.dataValues.firstname
-                    const managerId = await addManager(fio, chatId)
-                    console.log('Менеджер успешно добавлен в Notion!', managerId)
-
-                    //добавить аватар
-                    //const res = await addAvatar(workerId, urlAvatar)
-                    //console.log("res upload avatar: ", res)
-                }
+                
                 
 
                 //обработка пересылаемых сообщений
