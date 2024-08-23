@@ -12,7 +12,7 @@ module.exports = async function getManagerNotion(id) {
             "filter": {
                 "property": "ID",
                 "rich_text": {
-                    "contains": id
+                    "contains": id.toString()
                 }
             },
             "sorts": [{ 

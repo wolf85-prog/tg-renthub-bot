@@ -149,7 +149,7 @@ bot.on('message', async (msg) => {
 
                 // команда Добавить таблицу Претенденты
         if (text === '/getmanager') {
-            const notion = await getManagerNotion(chatId)
+            const notion = await getManagerNotion(parseInt(chatId))
             console.log("notion specialist: ", notion)
         }
 
