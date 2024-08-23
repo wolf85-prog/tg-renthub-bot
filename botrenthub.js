@@ -216,7 +216,7 @@ bot.on('message', async (msg) => {
                 
                 //сохраниь в бд ноушен
                 const notion = await getManagerNotion(parseInt(chatId))
-                console.log("notion specialist: ", notion)
+                //console.log("notion specialist: ", notion)
                 
                 if (notion) {
                     console.log('Менеджер уже существует в Notion!') 
