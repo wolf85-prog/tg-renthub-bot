@@ -215,10 +215,12 @@ bot.on('message', async (msg) => {
                 //await bot.sendMessage(chatId, 'Я принял ваш запрос!')  
                 
                 //сохраниь в бд ноушен
-                const notion = await getManagerNotion(chatId)
+                const notion = await getManagerNotion(parseInt(chatId))
                 console.log("notion specialist: ", notion)
                 
-                if (notion.length === 0) {
+                if (notion) {
+                    console.log('Менеджер уже существует в Notion!')                
+                } else {
                     //добавить специалиста
                     const managerId = await addManager(fio, chatId)
                     console.log('Менеджер успешно добавлен в Notion!', managerId)
@@ -226,8 +228,6 @@ bot.on('message', async (msg) => {
                     //добавить аватар
                     //const res = await addAvatar(workerId, urlAvatar)
                     //console.log("res upload avatar: ", res)
-                } else {
-                    console.log('Менеджер уже существует в Notion!')
                 }
             }
         }
