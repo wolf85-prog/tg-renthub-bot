@@ -220,24 +220,27 @@ bot.on('message', async (msg) => {
                 
                 if (notion) {
                     console.log('Менеджер уже существует в Notion!') 
-                    const res = await Manager.update(
-                        {
-                            fio: notion.fio,
-                            phone: notion.phone,
-                            city: notion.city,
-                            company: notion.companyId,
-                            doljnost: notion.doljnost,
-                            comteg: notion.comteg,
-                            comment: notion.comment,
-                        },
-                        {
-                            where: {chatId: chatId.toString()}
-                        }) 
-                    if (res) {
-                        console.log('Менеджер обновлен в БД', res)    
-                    } else {
-                        console.log('Сбой обновления!')
-                    }             
+
+                    try {
+                        const res = await Manager.update({
+                                fio: notion.fio,
+                                phone: notion.phone,
+                                city: notion.city,
+                                company: notion.companyId,
+                                doljnost: notion.doljnost,
+                                comteg: notion.comteg,
+                                comment: notion.comment,
+                            },
+                            {
+                                where: {chatId: chatId.toString()}
+                            }) 
+                        if (res) {
+                            console.log('Менеджер обновлен в БД', res)    
+                        }    
+                    } catch (error) {
+                        console.log(error)
+                    }
+                               
                 } else {
                     //добавить специалиста
                     const managerId = await addManager(fio, chatId)
