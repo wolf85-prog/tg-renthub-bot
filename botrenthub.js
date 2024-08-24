@@ -13,6 +13,9 @@ const fs = require('fs');
 const app = express();
 const path = require('path')
 const router = require('./botrenthub/routes/index')
+const sharp = require('sharp');
+
+const host = process.env.HOST
 
 app.use(express.json());
 app.use(cors());
@@ -198,6 +201,71 @@ bot.on('message', async (msg) => {
                     name : item.name,
                 }
             ))
+
+            try {
+                const avatar = notion[0].profile.files.length > 0 ? notion[0].profile.files[0].file.url : ''
+                //сохранить фото на сервере
+                const date = new Date()
+                const currentDate = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}T${date.getHours()}:${date.getMinutes()}`
+                const directory = "/var/www/proj.uley.team/avatars";
+    
+                //if (avatar) {  
+    
+                    //найти старое фото
+                    var fileName = chatId; 
+                    fs.readdir(directory, function(err,list){
+                        if(err) throw err;
+                        for(var i=0; i<list.length; i++)
+                        {
+                            if(list[i].includes(fileName))
+                            {
+                                //удалить найденный файл (синхронно)
+                                fs.unlinkSync(path.join(directory, list[i]), (err) => {
+                                    if (err) throw err;
+                                    console.log("Файл удален!")
+                                });
+                            }
+                        }
+                    });
+    
+                    //сохранить новое фото
+                    const file = fs.createWriteStream('/var/www/proj.uley.team/avatars/avatar_' + chatId + '_' + currentDate + '.jpg');
+                    
+                    const transformer = sharp()
+                    .resize(500)
+                    .on('info', ({ height }) => {
+                        console.log(`Image height is ${height}`);
+                    });
+                    
+                    const request = https.get(avatar, function(response) {
+                        response.pipe(transformer).pipe(file);
+    
+                        // after download completed close filestream
+                        file.on("finish", async() => {
+                            file.close();
+                            console.log("Download Completed");
+    
+                            const url = `${host}/avatars/avatar_` + chatId + '_' + currentDate + '.jpg'
+    
+                            //обновить бд
+                            const res = await Manager.update({ 
+                                avatar: url,
+                            },
+                            { 
+                                where: {chatId: chatId.toString()} 
+                            })
+    
+                            if (res) {
+                                console.log("Аватар обновлен! ", url) 
+                            }else {
+                                console.log("Ошибка обновления! ", worker.chatId) 
+                            }
+                        });
+                    });
+            } catch (err) {
+                console.error(err, new Date().toLocaleDateString());
+            }
+
             await Manager.update({ 
                 fio: notion[0].fio,
                 phone: notion[0].phone,
