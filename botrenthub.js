@@ -193,6 +193,11 @@ bot.on('message', async (msg) => {
         if (text === '/updatemanager') {
             const notion = await getManagerNotion(parseInt(chatId))
             console.log("notion specialist: ", notion)
+            const arr = notion[0].bisnes.map((item)=>(
+                {
+                    name : item.name,
+                }
+            ))
             await Manager.update({ 
                 fio: notion[0].fio,
                 phone: notion[0].phone,
@@ -201,7 +206,7 @@ bot.on('message', async (msg) => {
                 dojnost: notion[0].doljnost,
                 comteg: notion[0].comteg,
                 comment: notion[0].comment,
-                worklist: JSON.stringify(notion[0].bisnes),
+                worklist: JSON.stringify(arr),
             }, 
             {where: {
                chatId: chatId.toString()

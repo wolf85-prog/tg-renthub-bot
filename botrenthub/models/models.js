@@ -20,7 +20,7 @@ const Manager = sequelize.define('manager', {
     projects: {type: DataTypes.STRING},
     dojnost: {type: DataTypes.STRING},
     comteg: {type: DataTypes.STRING},
-    worklist: {type: DataTypes.STRING},
+    worklist: {type: DataTypes.TEXT},
     chatId: {type: DataTypes.STRING, unique: true},
     from: {type: DataTypes.STRING},
     avatar: {type: DataTypes.STRING},
