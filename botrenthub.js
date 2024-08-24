@@ -201,7 +201,7 @@ bot.on('message', async (msg) => {
                 dojnost: notion[0].doljnost,
                 comteg: notion[0].comteg,
                 comment: notion[0].comment,
-                worklist: notion[0].bisnes,
+                worklist: JSON.stringify(notion[0].bisnes),
             }, 
             {where: {
                chatId: chatId.toString()
