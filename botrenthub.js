@@ -245,7 +245,7 @@ bot.on('message', async (msg) => {
                             file.close();
                             console.log("Download Completed");
     
-                            const url = `${host}/avatars/avatar_` + chatId + '_' + currentDate + '.jpg'
+                            const url = `${host}/avatars/avatar_r` + chatId + '_' + currentDate + '.jpg'
     
                             //обновить бд
                             const res = await Manager.update({ 
