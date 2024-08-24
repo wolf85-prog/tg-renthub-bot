@@ -184,10 +184,28 @@ bot.on('message', async (msg) => {
             }
         }
 
-                // команда Добавить таблицу Претенденты
+        // команда Добавить таблицу Претенденты
         if (text === '/getmanager') {
             const notion = await getManagerNotion(parseInt(chatId))
             console.log("notion specialist: ", notion)
+        }
+
+        if (text === '/updatemanager') {
+            const notion = await getManagerNotion(parseInt(chatId))
+            console.log("notion specialist: ", notion)
+            await Manager.update({ 
+                fio: notion[0].fio,
+                phone: notion[0].phone,
+                city: notion[0].city,
+                company: notion[0].companyId,
+                dojnost: notion[0].doljnost,
+                comteg: notion[0].comteg,
+                comment: notion[0].comment,
+                worklist: notion[0].bisnes,
+            }, 
+            {where: {
+               chatId: chatId.toString()
+            }})
         }
 
         //обработка сообщений    
