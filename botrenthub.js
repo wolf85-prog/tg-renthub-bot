@@ -212,7 +212,7 @@ bot.on('message', async (msg) => {
                 //if (avatar) {  
     
                     //найти старое фото
-                    var fileName = chatId; 
+                    var fileName = 'r'+chatId; 
                     fs.readdir(directory, function(err,list){
                         if(err) throw err;
                         for(var i=0; i<list.length; i++)
@@ -229,7 +229,7 @@ bot.on('message', async (msg) => {
                     });
     
                     //сохранить новое фото
-                    const file = fs.createWriteStream('/var/www/proj.uley.team/avatars/avatar_' + chatId + '_' + currentDate + '.jpg');
+                    const file = fs.createWriteStream('/var/www/proj.uley.team/avatars/avatar_r' + chatId + '_' + currentDate + '.jpg');
                     
                     const transformer = sharp()
                     .resize(500)
