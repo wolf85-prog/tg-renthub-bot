@@ -34,7 +34,7 @@ module.exports = async function getManagerNotion(id) {
                 projects: page.properties["Проекты"].number,
                 doljnost: page.properties["Должность"].select ? page.properties["Должность"].select.name : null,
                 companyId: page.properties["Компания"].relation[0] ? page.properties["Компания"].relation[0].id : null,
-                profile: manager.properties["Профиль"],
+                profile: page.properties["Профиль"],
             };
         });
 
