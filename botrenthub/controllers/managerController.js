@@ -110,6 +110,7 @@ async function getManagers() {
                projects: manager.properties["Проекты"].number,
                doljnost: manager.properties["Должность"].select ? manager.properties["Должность"].select.name : null,
                companyId: manager.properties["Компания"].relation[0] ? manager.properties["Компания"].relation[0].id : null,
+               profile: manager.properties["Профиль"],
             };
         });
 
