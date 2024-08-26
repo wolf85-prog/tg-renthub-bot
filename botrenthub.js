@@ -210,7 +210,7 @@ bot.on('message', async (msg) => {
                 //сохранить фото на сервере
                 const date = new Date()
                 const currentDate = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}T${date.getHours()}:${date.getMinutes()}`
-                const directory = "/var/www/proj.uley.team/avatars";
+                const directory = "/var/www/proj.uley.team/avatars/managers";
     
                 //if (avatar) {  
     
@@ -232,7 +232,7 @@ bot.on('message', async (msg) => {
                     });
     
                     //сохранить новое фото
-                    const file = fs.createWriteStream('/var/www/proj.uley.team/avatars/avatar_r' + chatId + '_' + currentDate + '.jpg');
+                    const file = fs.createWriteStream('/var/www/proj.uley.team/avatars/managers/avatar_' + chatId + '_' + currentDate + '.jpg');
                     
                     const transformer = sharp()
                     .resize(500)
@@ -248,7 +248,7 @@ bot.on('message', async (msg) => {
                             file.close();
                             console.log("Download Completed");
     
-                            const url = `${host}/avatars/avatar_r` + chatId + '_' + currentDate + '.jpg'
+                            const url = `${host}/avatars/managers/avatar_` + chatId + '_' + currentDate + '.jpg'
     
                             //обновить бд
                             const res = await Manager.update({ 
