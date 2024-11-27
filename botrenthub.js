@@ -186,7 +186,7 @@ bot.on('message', async (msg) => {
         // команда Добавить таблицу Претенденты
         if (text === '/getmanagers') {
             try {
-                const response = await axios.get(`https://proj.uley.team:5000/api/managers/get`)
+                const response = await axios.get(``)
                 console.log(JSON.stringify(response.data))
 
                 response.data.map(async (user, index) => {      
@@ -207,7 +207,7 @@ bot.on('message', async (msg) => {
 
         if (text === '/getcompanies') {
             try {
-                const response = await axios.get(`https://proj.uley.team:5000/api/companys/get`)
+                const response = await axios.get(``)
                 console.log(JSON.stringify(response.data))
 
                 response.data.map(async (user, index) => {      
@@ -322,11 +322,7 @@ bot.on('message', async (msg) => {
             
             } else {
 //----------------------------------------------------------------------------------------------------------------
-                //отправка сообщения  
-
-                //сохраниь в бд ноушен
-                
-                
+                //отправка сообщения      
 
                 //обработка пересылаемых сообщений
                 let str_text;
