@@ -14,6 +14,7 @@ const app = express();
 const path = require('path')
 const router = require('./botrenthub/routes/index')
 const sharp = require('sharp');
+const axios = require('axios');
 
 const host = process.env.HOST
 
