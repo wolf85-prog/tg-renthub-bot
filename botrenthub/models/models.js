@@ -69,10 +69,32 @@ const Distribution = sequelize.define('distribution', {
     editButton: {type: DataTypes.BOOLEAN}, //редактируемая кнопка
 })
 
+const Company = sequelize.define('company', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
+    title: {type: DataTypes.STRING}, //
+    city: {type: DataTypes.STRING},
+    office: {type: DataTypes.STRING},
+    sklad: {type: DataTypes.STRING},
+    comment: {type: DataTypes.TEXT},
+    projects: {type: DataTypes.TEXT},
+    managers: {type: DataTypes.TEXT},
+    dogovorDate: {type: DataTypes.STRING}, 
+    dogovorNumber: {type: DataTypes.STRING}, 
+    bugalterFio: {type: DataTypes.STRING}, 
+    bugalterEmail: {type: DataTypes.STRING},
+    bugalterPhone: {type: DataTypes.STRING},  
+    GUID: {type: DataTypes.STRING}, 
+    inn: {type: DataTypes.STRING}, //инн компании
+    profile: {type: DataTypes.STRING},
+    sfera: {type: DataTypes.TEXT},
+    comteg: {type: DataTypes.TEXT},
+})
+
 
 module.exports = {
     UserBot, 
     Manager,
+    Company,
     Message, 
     Conversation, 
     Distribution,

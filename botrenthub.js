@@ -26,7 +26,7 @@ app.use('/', router)
 //подключение к БД PostreSQL
 const sequelize = require('./botrenthub/connections/db')
 const { Op } = require('sequelize')
-const {UserBot, Message, Conversation, Manager } = require('./botrenthub/models/models');
+const {UserBot, Message, Conversation, Manager, Company } = require('./botrenthub/models/models');
 
 //socket.io
 const {io} = require("socket.io-client")
@@ -36,15 +36,7 @@ const sendMyMessage = require('./botrenthub/common/sendMyMessage');
 const getManagerNotion = require("./botrenthub/common/getManagerNotion");
 const addManager = require("./botrenthub/common/addManager");
 
-//notion api
-// const { Client } = require("@notionhq/client");
-// const notion = new Client({ auth: process.env.NOTION_API_KEY });
-// const token_fetch = 'Bearer ' + process.env.NOTION_API_KEY;
-// const databaseId = process.env.NOTION_DATABASE_ID
-// const databaseWorkersId = process.env.NOTION_DATABASE_WORKERS_ID
-
 const chatTelegramId = process.env.CHAT_ID
-
 
 // Certificate
 const privateKey = fs.readFileSync('privkey.pem', 'utf8'); 
@@ -203,6 +195,27 @@ bot.on('message', async (msg) => {
     
                         //сохранение сообщения в базе данных wmessage
                         await Manager.create(user)
+    
+                    }, 500 * ++index) 
+                })
+
+                //return response.data
+            } catch (err) {
+                console.error(err.toJSON())
+            }
+        }
+
+        if (text === '/getcompanies') {
+            try {
+                const response = await axios.get(`https://proj.uley.team:5000/api/companys/get`)
+                console.log(JSON.stringify(response.data))
+
+                response.data.map(async (user, index) => {      
+                    setTimeout(async()=> { 
+                        console.log(index + " Компания: " + user.title + " сохранена!")
+    
+                        //сохранение сообщения в базе данных wmessage
+                        await Company.create(user)
     
                     }, 500 * ++index) 
                 })
