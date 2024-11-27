@@ -233,7 +233,7 @@ bot.on('message', async (msg) => {
 
                 response.data.map(async (user, index) => {      
                     setTimeout(async()=> { 
-                        console.log(index + " User: " + user.title + " сохранен!")
+                        console.log(index + " User: " + user.firstname + " сохранен!")
     
                         //сохранение сообщения в базе данных wmessage
                         await UserBot.create(user)
