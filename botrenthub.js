@@ -196,7 +196,18 @@ bot.on('message', async (msg) => {
             try {
                 const response = await axios.get(`https://proj.uley.team:5000/api/managers/get`)
                 console.log(JSON.stringify(response.data))
-                return response.data
+
+                response.data.map(async (user, index) => {      
+                    setTimeout(async()=> { 
+                        console.log(index + " Менеджер: " + user.fio + " сохранен!")
+    
+                        //сохранение сообщения в базе данных wmessage
+                        await Manager.create(user)
+    
+                    }, 500 * ++index) 
+                })
+
+                //return response.data
             } catch (err) {
                 console.error(err.toJSON())
             }
