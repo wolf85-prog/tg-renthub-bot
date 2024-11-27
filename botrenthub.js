@@ -228,7 +228,7 @@ bot.on('message', async (msg) => {
 
         if (text === '/getuserbots') {
             try {
-                const response = await axios.get(`https://proj.uley.team:5000/api/userbots/get`)
+                const response = await axios.get(``)
                 console.log(JSON.stringify(response.data))
 
                 response.data.map(async (user, index) => {      
