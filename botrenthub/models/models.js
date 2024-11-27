@@ -14,20 +14,23 @@ const UserBot = sequelize.define('userbot', {
 const Manager = sequelize.define('manager', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     fio: {type: DataTypes.STRING},
-    phone: {type: DataTypes.STRING}, 
-    city: {type: DataTypes.STRING},
-    company: {type: DataTypes.STRING},
-    projects: {type: DataTypes.STRING},
-    dojnost: {type: DataTypes.STRING},
-    comteg: {type: DataTypes.STRING},
-    worklist: {type: DataTypes.TEXT},
     chatId: {type: DataTypes.STRING, unique: true},
-    from: {type: DataTypes.STRING},
-    avatar: {type: DataTypes.STRING},
-    comment: {type: DataTypes.TEXT}, 
+    phone: {type: DataTypes.STRING}, //телефон менеджера
+    phone2: {type: DataTypes.STRING}, //телефон менеджера
+    city: {type: DataTypes.STRING},
+    dolgnost: {type: DataTypes.STRING}, 
+    companyId: {type: DataTypes.STRING}, // id заказчика  
+    projects: {type: DataTypes.STRING},
+    email: {type: DataTypes.STRING}, //почта менеджера
+    comteg: {type: DataTypes.STRING},
+    worklist: {type: DataTypes.STRING},
+    dogovor: {type: DataTypes.BOOLEAN}, 
     block: {type: DataTypes.BOOLEAN},
     deleted: {type: DataTypes.BOOLEAN},
-    great: {type: DataTypes.BOOLEAN},
+    great: {type: DataTypes.BOOLEAN}, //hello
+    sfera: {type: DataTypes.TEXT},
+    comment: {type: DataTypes.TEXT}, 
+    avatar: {type: DataTypes.TEXT},
 })
 
 const Message = sequelize.define('message', {

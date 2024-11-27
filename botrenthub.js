@@ -191,12 +191,18 @@ bot.on('message', async (msg) => {
         }
 
         // команда Добавить таблицу Претенденты
-        if (text === '/getmanager') {
-            const notion = await getManagerNotion(parseInt(chatId))
-            console.log("notion specialist: ", notion)
+        if (text === '/getmanagers') {
+            try {
+                const response = await axios.get(`https://proj.uley.team:5000/api/managers/get`)
+                console.log(JSON.stringify(response.data))
+                return response.data
+            } catch (err) {
+                console.error(err.toJSON())
+            }
         }
 
         if (text === '/updatemanager') {
+
             const notion = await getManagerNotion(parseInt(chatId))
             console.log("notion specialist: ", notion)
             const arr = notion[0].bisnes.map((item)=>(
