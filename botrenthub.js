@@ -226,6 +226,27 @@ bot.on('message', async (msg) => {
             }
         }
 
+        if (text === '/getuserbots') {
+            try {
+                const response = await axios.get(`https://proj.uley.team:5000/api/userbots/get`)
+                console.log(JSON.stringify(response.data))
+
+                response.data.map(async (user, index) => {      
+                    setTimeout(async()=> { 
+                        console.log(index + " User: " + user.title + " сохранен!")
+    
+                        //сохранение сообщения в базе данных wmessage
+                        await UserBot.create(user)
+    
+                    }, 500 * ++index) 
+                })
+
+                //return response.data
+            } catch (err) {
+                console.error(err.toJSON())
+            }
+        }
+
         if (text === '/updatemanager') {
 
             const notion = await getManagerNotion(parseInt(chatId))

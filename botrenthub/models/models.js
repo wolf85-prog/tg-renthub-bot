@@ -6,7 +6,6 @@ const UserBot = sequelize.define('userbot', {
     firstname: {type: DataTypes.STRING},
     lastname: {type: DataTypes.STRING},
     chatId: {type: DataTypes.STRING, unique: true},
-    avatar: {type: DataTypes.STRING},
     username: {type: DataTypes.STRING},
     block: {type: DataTypes.BOOLEAN},
 })
