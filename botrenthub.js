@@ -74,62 +74,30 @@ bot.on('message', async (msg) => {
                 console.log('Пользователь добавлен в БД')
             } else {
                 console.log('Отмена добавления в БД. Пользователь уже существует')
+                
+                console.log('Обновление ника...')
+                const res = await UserBot.update({ 
+                    username: username,
+                },
+                { 
+                    where: {chatId: chatId.toString()} 
+                })
             }
 
             // 2 (менеджер)
-            //поиск менеджера в ноушене
-            const notion = await getManagerNotion(parseInt(chatId))
-
-            if (notion) {
-                console.log('Менеджер уже существует в Notion!') 
-
+            //поиск менеджера в бд
+            const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
+                        
+            if (!userW) {
                 //добавление пользователя в БД MANAGERS
-                const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
-                if (!userW) {
-                    await Manager.create({ 
-                        fio: notion[0].fio,
-                        phone: notion[0].phone,
-                        city: notion[0].city,
-                        company: notion[0].companyId,
-                        dojnost: notion[0].doljnost,
-                        comteg: notion[0].comteg,
-                        comment: notion[0].comment,
-                        chatId: chatId,
-                        worklist: JSON.stringify(notion[0].bisnes), 
-                        from: 'Notion',
-                    })
-                    console.log('Пользователь добавлен в БД managers')
-                } else {
-                    console.log('Отмена операции! Пользователь уже существует в managers')   
-                }                     
+                await Manager.create({ 
+                    fio: lastname + ' ' + firstname,
+                    chatId: chatId,
+                })
+                console.log('Пользователь добавлен в БД managers')                   
                                        
             } else {
-                //поиск менеджера в бд
-                const user = await UserBot.findOne({where:{chatId: chatId.toString()}})
-
-                //добавить специалиста в ноушен
-                const fio = 'Неизвестный заказчик'
-                const managerId = await addManager(fio, chatId)
-                console.log('Менеджер успешно добавлен в Notion!', managerId)
-
-                //добавить аватар
-                //const res = await addAvatar(workerId, urlAvatar)
-                //console.log("res upload avatar: ", res)
-
-                //добавление пользователя в БД MANAGERS
-                const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
-                if (!userW) {
-                    await Manager.create({ 
-                        fio: 'Неизвестный заказчик', 
-                        chatId: chatId, 
-                        worklist: '',
-                        from: 'Bot',
-                        avatar: ''
-                    })
-                    console.log('Пользователь добавлен в БД managers')
-                } else {
-                    console.log('Отмена операции! Пользователь уже существует в managers')
-                }
+                console.log('Отмена операции! Пользователь уже существует в managers')
             }    
 
 
@@ -245,95 +213,6 @@ bot.on('message', async (msg) => {
             } catch (err) {
                 console.error(err.toJSON())
             }
-        }
-
-        if (text === '/updatemanager') {
-
-            const notion = await getManagerNotion(parseInt(chatId))
-            console.log("notion specialist: ", notion)
-            const arr = notion[0].bisnes.map((item)=>(
-                {
-                    name : item.name,
-                }
-            ))
-
-            try {
-                const avatar = notion[0].profile.files.length > 0 ? notion[0].profile.files[0].file.url : ''
-                //сохранить фото на сервере
-                const date = new Date()
-                const currentDate = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}T${date.getHours()}:${date.getMinutes()}`
-                const directory = "/var/www/proj.uley.team/avatars/managers";
-    
-                //if (avatar) {  
-    
-                    //найти старое фото
-                    var fileName = 'r'+chatId; 
-                    fs.readdir(directory, function(err,list){
-                        if(err) throw err;
-                        for(var i=0; i<list.length; i++)
-                        {
-                            if(list[i].includes(fileName))
-                            {
-                                //удалить найденный файл (синхронно)
-                                fs.unlinkSync(path.join(directory, list[i]), (err) => {
-                                    if (err) throw err;
-                                    console.log("Файл удален!")
-                                });
-                            }
-                        }
-                    });
-    
-                    //сохранить новое фото
-                    const file = fs.createWriteStream('/var/www/proj.uley.team/avatars/managers/avatar_' + chatId + '_' + currentDate + '.jpg');
-                    
-                    const transformer = sharp()
-                    .resize(500)
-                    .on('info', ({ height }) => {
-                        console.log(`Image height is ${height}`);
-                    });
-                    
-                    const request = https.get(avatar, function(response) {
-                        response.pipe(transformer).pipe(file);
-    
-                        // after download completed close filestream
-                        file.on("finish", async() => {
-                            file.close();
-                            console.log("Download Completed");
-    
-                            const url = `${host}/avatars/managers/avatar_` + chatId + '_' + currentDate + '.jpg'
-    
-                            //обновить бд
-                            const res = await Manager.update({ 
-                                avatar: url,
-                            },
-                            { 
-                                where: {chatId: chatId.toString()} 
-                            })
-    
-                            if (res) {
-                                console.log("Аватар обновлен! ", url) 
-                            }else {
-                                console.log("Ошибка обновления! ", worker.chatId) 
-                            }
-                        });
-                    });
-            } catch (err) {
-                console.error(err, new Date().toLocaleDateString());
-            }
-
-            await Manager.update({ 
-                fio: notion[0].fio,
-                phone: notion[0].phone,
-                city: notion[0].city,
-                company: notion[0].companyId,
-                dojnost: notion[0].doljnost,
-                comteg: notion[0].comteg,
-                comment: notion[0].comment,
-                worklist: JSON.stringify(arr),
-            }, 
-            {where: {
-               chatId: chatId.toString()
-            }})
         }
 
         //обработка сообщений    
