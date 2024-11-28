@@ -222,7 +222,27 @@ bot.on('message', async (msg) => {
             
             } else {
 //----------------------------------------------------------------------------------------------------------------
-                //отправка сообщения      
+                //отправка сообщения 
+                // Подключаемся к серверу socket
+                let socket = io(socketUrl);
+                socket.emit("addUser", chatId)   
+                
+                //добавить пользователя в бд
+                const user = await UserBot.findOne({where:{chatId: chatId.toString()}})
+                if (!user) {
+                    await UserBot.create({ firstname: firstname, lastname: lastname, chatId: chatId, username: username })
+                    console.log('Пользователь добавлен в БД')
+                } else {
+                    console.log('Отмена добавления в БД. Пользователь уже существует')
+                    
+                    console.log('Обновление ника...')
+                    const res = await UserBot.update({ 
+                        username: username,
+                    },
+                    { 
+                        where: {chatId: chatId.toString()} 
+                    })
+                }
 
                 //обработка пересылаемых сообщений
                 let str_text;
@@ -237,11 +257,6 @@ bot.on('message', async (msg) => {
 
                 // сохранить отправленное боту сообщение пользователя в БД
                 const convId = sendMyMessage(str_text, 'text', chatId, messageId, reply_id)
-
-                // Подключаемся к серверу socket
-                let socket = io(socketUrl);
-
-                socket.emit("addUser", chatId)
 
                 socket.emit("sendMessageRent", {
                     senderId: chatId,
