@@ -36,6 +36,8 @@ const sendMyMessage = require('./botrenthub/common/sendMyMessage');
 const getManagerNotion = require("./botrenthub/common/getManagerNotion");
 const addManager = require("./botrenthub/common/addManager");
 
+let projectId, projectName, projectDate, projectTime, dateStart, manager_id, company_id, Geo, Teh, Worklist, Equipmentlist;
+
 const chatTelegramId = process.env.CHAT_ID
 
 // Certificate
@@ -50,6 +52,77 @@ const credentials = {
 };
 
 const httpsServer = https.createServer(credentials, app);
+
+//--------------------------------------------------------------------------------------------------------
+//              REQUEST
+//--------------------------------------------------------------------------------------------------------
+
+//создание страницы (проекта) базы данных проектов
+app.post('/web-data', async (req, res) => {
+    const {queryId, projectname, datestart, geo, teh, managerId, companyId, worklist = [], equipmentlist = [], chatId} = req.body;
+    const d = new Date(datestart);
+    const year = d.getFullYear();
+    const month = String(d.getMonth()+1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const chas = d.getHours();
+    const minut = String(d.getMinutes()).padStart(2, "0");
+    try {
+        if (worklist.length > 0) {
+
+            console.log("Начинаю сохранять данные по заявке...")
+            projectName = projectname
+            projectDate = `${day}.${month}`
+            projectTime = `${chas}:${minut}`
+            dateStart = datestart
+            Teh = teh
+            Worklist = worklist
+            Equipmentlist = equipmentlist 
+            manager_id = managerId
+            company_id = companyId
+            Geo = geo   
+            console.log("Сохранение данных завершено: ", projectName)
+            
+            await bot.answerWebAppQuery(queryId, {
+                type: 'article',
+                id: queryId,
+                title: 'Проект успешно создан',
+                input_message_content: {
+                    parse_mode: 'HTML',
+                    message_text: 
+  `Проект успешно создан! ${ companyId === 'Локальный заказчик' ? 'Offline' : ''} 
+  
+<b>Проект:</b> ${projectname} 
+<b>Дата:</b> ${day}.${month}.${year}
+<b>Время:</b> ${chas}:${minut} 
+<b>Адрес:</b> ${geo} 
+<b>Тех. задание:</b> ${teh}
+  
+<b>Специалисты:</b>  
+${worklist.map(item =>' - ' + item.spec + ' = ' + item.count + ' чел.').join('\n')}`
+              }
+        })
+        
+        //отправить сообщение в чат-админку (телеграм)
+        await bot.sendMessage(chatGroupId, 
+`Проект успешно создан! ${ companyId === 'Локальный заказчик' ? 'Offline' : ''} 
+  
+Название проекта:  ${projectname} 
+Дата: ${day}.${month}.${year}
+Время: ${chas}:${minut} 
+Адрес: ${geo} 
+Тех. задание: ${teh} 
+  
+Специалисты:  
+${worklist.map(item => ' - ' + item.spec + ' = ' + item.count + ' чел.').join('\n')}`
+          )
+
+        } 
+  
+        return res.status(200).json({});
+    } catch (e) {
+        return res.status(500).json({})
+    }
+})
 
 //-----------------------------------------------------------------------------------------
 // START (обработка команд и входящих сообщени от пользователя)
