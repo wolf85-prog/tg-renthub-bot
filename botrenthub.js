@@ -105,18 +105,18 @@ ${worklist.map(item =>' - ' + item.spec + ' = ' + item.count + ' чел.').join(
         })
         
         //отправить сообщение в чат-админку (телеграм)
-        await bot.sendMessage(chatGroupId, 
-`Проект успешно создан! ${ companyId === 'Локальный заказчик' ? 'Offline' : ''} 
+//         await bot.sendMessage(chatGroupId, 
+// `Проект успешно создан! ${ companyId === 'Локальный заказчик' ? 'Offline' : ''} 
   
-Название проекта:  ${projectname} 
-Дата: ${day}.${month}.${year}
-Время: ${chas}:${minut} 
-Адрес: ${geo} 
-Тех. задание: ${teh} 
+// Название проекта:  ${projectname} 
+// Дата: ${day}.${month}.${year}
+// Время: ${chas}:${minut} 
+// Адрес: ${geo} 
+// Тех. задание: ${teh} 
   
-Специалисты:  
-${worklist.map(item => ' - ' + item.spec + ' = ' + item.count + ' чел.').join('\n')}`
-          )
+// Специалисты:  
+// ${worklist.map(item => ' - ' + item.spec + ' = ' + item.count + ' чел.').join('\n')}`
+//           )
 
         } 
   
@@ -297,12 +297,12 @@ bot.on('message', async (msg) => {
 
             // Проект успешно создан
         } else if (text.startsWith('Проект успешно создан')) {           
-            const response = await bot.sendMessage(chatTelegramId, `${text} \n \n от ${firstname} ${lastname} ${chatId}`)
+            //const response = await bot.sendMessage(chatTelegramId, `${text} \n \n от ${firstname} ${lastname} ${chatId}`)
 
             console.log("Отправляю сообщение в админ-панель...")
 
             //отправить сообщение о создании проекта в админ-панель
-            const convId = await sendMyMessage(text, "text", chatId, parseInt(response.message_id)-1)
+            const convId = await sendMyMessage(text, "text", chatId, "")
             
             // Подключаемся к серверу socket
             let socket = io(socketUrl);
@@ -315,7 +315,7 @@ bot.on('message', async (msg) => {
                 text: text,
                 type: 'text',
                 convId: convId,
-                messageId: response.message_id,
+                //messageId: response.message_id,
             })
 
 
@@ -371,7 +371,7 @@ bot.on('message', async (msg) => {
 
                 console.log('Проект успешно добавлен в БД! Project: ' + res.name)  
                 
-                const project = await ProjectNew.findOne({where:{id: res.id}})
+                const project = await Project.findOne({where:{id: res.id}})
             
 //-------------------------------------------------------------------------------------------------------------------------------
 //--------------------------- Создание проекта ----------------------------------------------------------------------------------
