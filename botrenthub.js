@@ -18,6 +18,8 @@ const axios = require('axios');
 
 const host = process.env.HOST
 
+let projectId, projectName, projectDate, projectTime, dateStart, manager_id, company_id, Geo, Teh, Worklist, Equipmentlist;
+
 app.use(express.json());
 app.use(cors());
 app.use(express.static(path.resolve(__dirname, 'static')))
@@ -26,7 +28,7 @@ app.use('/', router)
 //подключение к БД PostreSQL
 const sequelize = require('./botrenthub/connections/db')
 const { Op } = require('sequelize')
-const {UserBot, Message, Conversation, Manager, Company } = require('./botrenthub/models/models');
+const {UserBot, Message, Conversation, Manager, Company, ProjectNew } = require('./botrenthub/models/models');
 
 //socket.io
 const {io} = require("socket.io-client")
@@ -35,8 +37,6 @@ const socketUrl = process.env.SOCKET_APP_URL
 const sendMyMessage = require('./botrenthub/common/sendMyMessage');
 const getManagerNotion = require("./botrenthub/common/getManagerNotion");
 const addManager = require("./botrenthub/common/addManager");
-
-let projectId, projectName, projectDate, projectTime, dateStart, manager_id, company_id, Geo, Teh, Worklist, Equipmentlist;
 
 const chatTelegramId = process.env.CHAT_ID
 
@@ -53,10 +53,10 @@ const credentials = {
 
 const httpsServer = https.createServer(credentials, app);
 
+
 //--------------------------------------------------------------------------------------------------------
 //              REQUEST
 //--------------------------------------------------------------------------------------------------------
-
 //создание страницы (проекта) базы данных проектов
 app.post('/web-data', async (req, res) => {
     const {queryId, projectname, datestart, geo, teh, managerId, companyId, worklist = [], equipmentlist = [], chatId} = req.body;
@@ -68,7 +68,6 @@ app.post('/web-data', async (req, res) => {
     const minut = String(d.getMinutes()).padStart(2, "0");
     try {
         if (worklist.length > 0) {
-
             console.log("Начинаю сохранять данные по заявке...")
             projectName = projectname
             projectDate = `${day}.${month}`
@@ -115,7 +114,6 @@ ${worklist.map(item =>' - ' + item.spec + ' = ' + item.count + ' чел.').join(
 Специалисты:  
 ${worklist.map(item => ' - ' + item.spec + ' = ' + item.count + ' чел.').join('\n')}`
           )
-
         } 
   
         return res.status(200).json({});
@@ -147,30 +145,62 @@ bot.on('message', async (msg) => {
                 console.log('Пользователь добавлен в БД')
             } else {
                 console.log('Отмена добавления в БД. Пользователь уже существует')
-                
-                console.log('Обновление ника...')
-                const res = await UserBot.update({ 
-                    username: username,
-                },
-                { 
-                    where: {chatId: chatId.toString()} 
-                })
             }
 
             // 2 (менеджер)
-            //поиск менеджера в бд
-            const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
-                        
-            if (!userW) {
+            //поиск менеджера в ноушене
+            const notion = await getManagerNotion(parseInt(chatId))
+
+            if (notion) {
+                console.log('Менеджер уже существует в Notion!') 
+
                 //добавление пользователя в БД MANAGERS
-                await Manager.create({ 
-                    fio: lastname + ' ' + firstname,
-                    chatId: chatId,
-                })
-                console.log('Пользователь добавлен в БД managers')                   
+                const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
+                if (!userW) {
+                    await Manager.create({ 
+                        fio: notion[0].fio,
+                        phone: notion[0].phone,
+                        city: notion[0].city,
+                        company: notion[0].companyId,
+                        dojnost: notion[0].doljnost,
+                        comteg: notion[0].comteg,
+                        comment: notion[0].comment,
+                        chatId: chatId,
+                        worklist: JSON.stringify(notion[0].bisnes), 
+                        from: 'Notion',
+                    })
+                    console.log('Пользователь добавлен в БД managers')
+                } else {
+                    console.log('Отмена операции! Пользователь уже существует в managers')   
+                }                     
                                        
             } else {
-                console.log('Отмена операции! Пользователь уже существует в managers')
+                //поиск менеджера в бд
+                const user = await UserBot.findOne({where:{chatId: chatId.toString()}})
+
+                //добавить специалиста в ноушен
+                const fio = 'Неизвестный заказчик'
+                const managerId = await addManager(fio, chatId)
+                console.log('Менеджер успешно добавлен в Notion!', managerId)
+
+                //добавить аватар
+                //const res = await addAvatar(workerId, urlAvatar)
+                //console.log("res upload avatar: ", res)
+
+                //добавление пользователя в БД MANAGERS
+                const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
+                if (!userW) {
+                    await Manager.create({ 
+                        fio: 'Неизвестный заказчик', 
+                        chatId: chatId, 
+                        worklist: '',
+                        from: 'Bot',
+                        avatar: ''
+                    })
+                    console.log('Пользователь добавлен в БД managers')
+                } else {
+                    console.log('Отмена операции! Пользователь уже существует в managers')
+                }
             }    
 
 
@@ -288,34 +318,178 @@ bot.on('message', async (msg) => {
             }
         }
 
+        if (text === '/updatemanager') {
+
+            const notion = await getManagerNotion(parseInt(chatId))
+            console.log("notion specialist: ", notion)
+            const arr = notion[0].bisnes.map((item)=>(
+                {
+                    name : item.name,
+                }
+            ))
+
+            try {
+                const avatar = notion[0].profile.files.length > 0 ? notion[0].profile.files[0].file.url : ''
+                //сохранить фото на сервере
+                const date = new Date()
+                const currentDate = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}T${date.getHours()}:${date.getMinutes()}`
+                const directory = "/var/www/proj.uley.team/avatars/managers";
+    
+                //if (avatar) {  
+    
+                    //найти старое фото
+                    var fileName = 'r'+chatId; 
+                    fs.readdir(directory, function(err,list){
+                        if(err) throw err;
+                        for(var i=0; i<list.length; i++)
+                        {
+                            if(list[i].includes(fileName))
+                            {
+                                //удалить найденный файл (синхронно)
+                                fs.unlinkSync(path.join(directory, list[i]), (err) => {
+                                    if (err) throw err;
+                                    console.log("Файл удален!")
+                                });
+                            }
+                        }
+                    });
+    
+                    //сохранить новое фото
+                    const file = fs.createWriteStream('/var/www/proj.uley.team/avatars/managers/avatar_' + chatId + '_' + currentDate + '.jpg');
+                    
+                    const transformer = sharp()
+                    .resize(500)
+                    .on('info', ({ height }) => {
+                        console.log(`Image height is ${height}`);
+                    });
+                    
+                    const request = https.get(avatar, function(response) {
+                        response.pipe(transformer).pipe(file);
+    
+                        // after download completed close filestream
+                        file.on("finish", async() => {
+                            file.close();
+                            console.log("Download Completed");
+    
+                            const url = `${host}/avatars/managers/avatar_` + chatId + '_' + currentDate + '.jpg'
+    
+                            //обновить бд
+                            const res = await Manager.update({ 
+                                avatar: url,
+                            },
+                            { 
+                                where: {chatId: chatId.toString()} 
+                            })
+    
+                            if (res) {
+                                console.log("Аватар обновлен! ", url) 
+                            }else {
+                                console.log("Ошибка обновления! ", worker.chatId) 
+                            }
+                        });
+                    });
+            } catch (err) {
+                console.error(err, new Date().toLocaleDateString());
+            }
+
+            await Manager.update({ 
+                fio: notion[0].fio,
+                phone: notion[0].phone,
+                city: notion[0].city,
+                company: notion[0].companyId,
+                dojnost: notion[0].doljnost,
+                comteg: notion[0].comteg,
+                comment: notion[0].comment,
+                worklist: JSON.stringify(arr),
+            }, 
+            {where: {
+               chatId: chatId.toString()
+            }})
+        }
+
         //обработка сообщений    
         if ((text || '')[0] !== '/' && text) {       
             if (text.startsWith("Reply")) {           
                 //await bot.sendMessage(text.substring(6, text.indexOf('.')), text.slice(text.indexOf('.') + 2)) 
             
-            } else {
-//----------------------------------------------------------------------------------------------------------------
-                //отправка сообщения 
+            // Проект успешно создан
+            } else if (text.startsWith('Проект успешно создан')) {  
+                const response = await bot.sendMessage(chatTelegramId, `${text} \n \n от ${firstname} ${lastname} ${chatId}`)
+
+                console.log("Отправляю сообщение в админ-панель...") 
+                //отправить сообщение о создании проекта в админ-панель
+                const convId = await sendMyMessage(text, "text", chatId, parseInt(response.message_id)-1)
+               
                 // Подключаемся к серверу socket
                 let socket = io(socketUrl);
-                socket.emit("addUser", chatId)   
+                socket.emit("addUser", chatId)
                 
-                //добавить пользователя в бд
-                const user = await UserBot.findOne({where:{chatId: chatId.toString()}})
-                if (!user) {
-                    await UserBot.create({ firstname: firstname, lastname: lastname, chatId: chatId, username: username })
-                    console.log('Пользователь добавлен в БД')
-                } else {
-                    console.log('Отмена добавления в БД. Пользователь уже существует')
-                    
-                    console.log('Обновление ника...')
-                    const res = await UserBot.update({ 
-                        username: username,
-                    },
-                    { 
-                        where: {chatId: chatId.toString()} 
-                    })
+                //отправить сообщение в админку
+                socket.emit("sendMessage", {
+                    senderId: chatId,
+                    receiverId: chatTelegramId,
+                    text: text,
+                    type: 'text',
+                    convId: convId,
+                    messageId: response.message_id,
+                })
+
+                //массив специалистов
+                let specArr = []
+                console.log("Сохраняю Worklist в БД: ", Worklist)
+                if (Worklist !== '') {
+                    specArr = Worklist.map(item => ({
+                        spec: item.spec,
+                        cat: item.cat,
+                        count: item.count,
+                    }));
                 }
+
+                try {
+                    //создание проекта в БД
+                    const res = await ProjectNew.create({ 
+                        name: projectName, 
+                        datestart: dateStart, 
+                        spec: JSON.stringify(specArr),
+                        equipment: JSON.stringify(equipArr),
+                        teh: Teh, 
+                        geo: Geo, 
+                        managerId: manager_id, 
+                        companyId: company_id, 
+                        chatId: chatId
+                    })
+
+                    //очистить переменные
+                    console.log("Очищаю переменные...")
+                    projectName = '';
+                    projectDate = '';
+                    projectTime = '';
+                    dateStart = '';
+                    Teh = '';
+                    manager_id = '';
+                    company_id = '';
+                    Geo = '';
+
+                    console.log('Проект успешно добавлен в БД! Project: ' + res.name)  
+                    
+                    const project = await ProjectNew.findOne({where:{id: res.id}})
+
+                    // отправить сообщение пользователю через 30 секунд
+                    setTimeout(() => {bot.sendMessage(project.chatId, 'Ваша заявка принята!')}, 25000) // 30 секунд                   
+                    
+                    const project2 = await ProjectNew.findOne({where:{id: res.id}})  
+                    
+                    //начать получать отчеты
+                    //getReports(project2, bot, currentProcess, dataProcess, dataInterval, dataTime)
+                    
+                                    
+                } catch (error) {
+                    console.log(error.message)
+                }
+
+            } else {
+//----------------------------------------------------------------------------------------------------------------
+                //отправка сообщения      
 
                 //обработка пересылаемых сообщений
                 let str_text;
@@ -330,6 +504,11 @@ bot.on('message', async (msg) => {
 
                 // сохранить отправленное боту сообщение пользователя в БД
                 const convId = sendMyMessage(str_text, 'text', chatId, messageId, reply_id)
+
+                // Подключаемся к серверу socket
+                let socket = io(socketUrl);
+
+                socket.emit("addUser", chatId)
 
                 socket.emit("sendMessageRent", {
                     senderId: chatId,
