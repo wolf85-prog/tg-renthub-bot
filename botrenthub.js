@@ -341,19 +341,33 @@ bot.on('message', async (msg) => {
                     count: item.count,
                 }));
             } 
+            
+//-------------------------------------------------------------------------------------------------------------------------------
+//--------------------------- Создание проекта ----------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------
+                //const crm = await sequelize.query("SELECT nextval('crm_id')");
+
+                //const resid = crm[0][0].nextval
+
 
             try {
                 //создание проекта в БД
-                const res = await Project.create({ 
-                    name: projectName, 
-                    datestart: dateStart, 
-                    spec: JSON.stringify(specArr),
+                const resAdd2 = await ProjectNew.create({               
+                    //crmID: resid.toString(),
+                    name: projectName,
+                    status: 'Новый',
+                    //specifika: '',
+                    //city: '',
+                    dateStart: dateStart + ':00.000Z', 
+                    dateEnd: '', 
+                    teh: Teh,
+                    geo: Geo,
+                    managerId: manager_id,
+                    companyId: company_id,
+                    chatId: chatId,
+                    spec: JSON.stringify(specArr),  
+                    comment: '',
                     equipment: JSON.stringify(equipArr),
-                    teh: Teh, 
-                    geo: Geo, 
-                    managerId: manager_id, 
-                    companyId: company_id, 
-                    chatId: chatId
                 })
 
                 //очистить переменные
@@ -369,43 +383,12 @@ bot.on('message', async (msg) => {
                 company_id = '';
                 Geo = '';
 
-                console.log('Проект успешно добавлен в БД! Project: ' + res.name)  
-                
-                const project = await Project.findOne({where:{id: res.id}})
-            
-//-------------------------------------------------------------------------------------------------------------------------------
-//--------------------------- Создание проекта ----------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------------------------------------
-                //const crm = await sequelize.query("SELECT nextval('crm_id')");
-
-                //const resid = crm[0][0].nextval
-
-                const obj = {                
-                    //crmID: resid.toString(),
-                    name: project.name,
-                    status: 'Новый',
-                    //specifika: '',
-                    //city: '',
-                    dateStart: project?.datestart + ':00.000Z', 
-                    dateEnd: project?.dateend, 
-                    teh: project?.teh,
-                    geo: project?.geo,
-                    managerId: project?.managerId,
-                    companyId: project?.companyId,
-                    chatId: chatId,
-                    spec: JSON.stringify(specArr),  
-                    comment: '',
-                    equipment: JSON.stringify(equipArr),
-                }
-                console.log("obj :", obj)
-
-                const resAdd2 = await ProjectNew.create(obj)
-                console.log("resAdd2: ", resAdd2)
+                console.log('Проект успешно добавлен в БД! Project: ' + resAdd2)  
 
                 // отправить сообщение пользователю через 30 секунд
-                setTimeout(() => {bot.sendMessage(project.chatId, 'Ваша заявка принята!')}, 25000) // 30 секунд                   
+                setTimeout(() => {bot.sendMessage(chatId, 'Ваша заявка принята!')}, 25000) // 30 секунд                   
                 
-                const project2 = await Project.findOne({where:{id: res.id}})  
+                const project2 = await ProjectNew.findOne({where:{id: resAdd2.id}})  
                 
                 //начать получать отчеты
                 //getReports(project2, bot, currentProcess, dataProcess, dataInterval, dataTime)
