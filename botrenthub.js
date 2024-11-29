@@ -39,6 +39,7 @@ const getManagerNotion = require("./botrenthub/common/getManagerNotion");
 const addManager = require("./botrenthub/common/addManager");
 
 const chatTelegramId = process.env.CHAT_ID
+const chatGroupId = process.env.CHAT_GROUP_ID
 
 // Certificate
 const privateKey = fs.readFileSync('privkey.pem', 'utf8'); 
