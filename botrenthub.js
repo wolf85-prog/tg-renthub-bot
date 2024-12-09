@@ -38,6 +38,7 @@ const socketUrl = process.env.SOCKET_APP_URL
 const sendMyMessage = require('./botrenthub/common/sendMyMessage');
 const getManagerNotion = require("./botrenthub/common/getManagerNotion");
 const addManager = require("./botrenthub/common/addManager");
+const addMainSpec = require("./botrenthub/common/addMainSpec");
 
 const chatTelegramId = process.env.CHAT_ID
 const chatGroupId = process.env.CHAT_GROUP_ID
