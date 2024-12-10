@@ -30,6 +30,7 @@ router.get("/managers", managerController.managers);                // все м
 
 // router.get("/managers/cash/:id", managerController.managerCash);     // получить данные менеджера из БД
 // router.get("/managersall/cash", managerController.managerCashAll);     // получить всех менеджеров из БД
+router.post('/managers/send/:id', managerController.sendAvatar)
 
 //get COMPANYS
 router.get("/companys", managerController.companys);

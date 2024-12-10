@@ -4,7 +4,21 @@ const notion = new Client({ auth: process.env.NOTION_API_KEY });
 const databaseManagerId = process.env.NOTION_DATABASE_MANAGER_ID
 const databaseCompanyId = process.env.NOTION_DATABASE_COMPANY_ID
 
+const token = process.env.TELEGRAM_API_TOKEN
+
 const { Manager } = require('../models/models')
+
+const axios = require("axios");
+
+//socket.io
+const {io} = require("socket.io-client");
+const socketUrl = process.env.SOCKET_APP_URL
+
+const $host = axios.create({
+    baseURL: process.env.REACT_APP_API_URL
+})
+
+const sendMessageAdmin = require("../common/sendMessageAdmin");
 
 //получить TelegramID менеджера по его id
 async function getManagerId(id) {
@@ -424,6 +438,44 @@ class ManagerController {
         }
         else{
             res.json({});
+        }
+    }
+
+
+    async sendAvatar(req, res) {
+        const {id} = req.params 
+        const {avatar} = req.body
+
+        const chatId = ''; //worker.dataValues.chatId
+
+        try {          
+
+            //отправить сообщение в админ-панель
+            const text = `⚠  Внимание! Логотип компании на обработку принят! ⚠
+${avatar}`
+            let sendTextToTelegram
+            if (text !== '') {
+                const url_send_msg = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${id}&parse_mode=html&text=${text.replace(/\n/g, '%0A')}`
+                console.log("Отправка текста...", url_send_msg)
+                
+                sendTextToTelegram = await $host.get(url_send_msg)
+                                    
+                const convId = await sendMessageAdmin(text, "text", chatId, sendTextToTelegram.message_id, null, false)
+                
+                // Подключаемся к серверу socket
+                let socket = io(socketUrl);
+                socket.emit("sendAdminSpec", {
+                    senderId: chatTelegramId,
+                    receiverId: chatId,
+                    text: text,
+                    convId: convId,
+                    messageId: sendTextToTelegram.message_id,
+                }) 
+            }
+                                                                
+            return res.status(200).json(sendTextToTelegram);
+        } catch (error) {
+            return res.status(500).json(error.message);
         }
     }
 }
