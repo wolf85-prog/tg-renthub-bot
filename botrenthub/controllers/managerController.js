@@ -460,18 +460,21 @@ ${avatar}`
                 console.log("Отправка текста...", url_send_msg)
                 
                 sendTextToTelegram = await $host.get(url_send_msg)
+                console.log("sendTextToTelegram: ", sendTextToTelegram)
                                     
                 const convId = await sendMessageAdmin(text, "text", chatId, sendTextToTelegram.message_id, null, false)
                 
                 // Подключаемся к серверу socket
                 let socket = io(socketUrl);
-                socket.emit("sendAdminSpec", {
+                socket.emit("sendMessage", {
                     senderId: chatTelegramId,
                     receiverId: id,
                     text: text,
+                    type: 'text',
                     convId: convId,
                     messageId: sendTextToTelegram.message_id,
                 }) 
+                
             }
                                                                 
             return res.status(200).json(sendTextToTelegram);
