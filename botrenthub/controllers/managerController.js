@@ -20,6 +20,7 @@ const $host = axios.create({
 const chatTelegramId = process.env.CHAT_ID
 
 const sendMessageAdmin = require("../common/sendMessageAdmin");
+const sendMyMessage = require("../common/sendMyMessage");
 
 //получить TelegramID менеджера по его id
 async function getManagerId(id) {
@@ -462,7 +463,7 @@ ${avatar}`
                 sendTextToTelegram = await $host.get(url_send_msg)
                 //console.log("sendTextToTelegram: ", sendTextToTelegram)
                                     
-                const convId = await sendMessageAdmin(text, "text", chatId, sendTextToTelegram.data.result.message_id, null, false)
+                const convId = await sendMyMessage(text, "text", id, sendTextToTelegram.data.result.message_id, null, false)
                 
                 // Подключаемся к серверу socket
                 let socket = io(socketUrl);
