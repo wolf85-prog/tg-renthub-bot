@@ -460,9 +460,9 @@ ${avatar}`
                 console.log("Отправка текста...", url_send_msg)
                 
                 sendTextToTelegram = await $host.get(url_send_msg)
-                console.log("sendTextToTelegram: ", sendTextToTelegram)
+                //console.log("sendTextToTelegram: ", sendTextToTelegram)
                                     
-                const convId = await sendMessageAdmin(text, "text", chatId, sendTextToTelegram.message_id, null, false)
+                const convId = await sendMessageAdmin(text, "text", chatId, sendTextToTelegram.data.result.message_id, null, false)
                 
                 // Подключаемся к серверу socket
                 let socket = io(socketUrl);
@@ -472,12 +472,12 @@ ${avatar}`
                     text: text,
                     type: 'text',
                     convId: convId,
-                    messageId: sendTextToTelegram.message_id,
+                    messageId: sendTextToTelegram.data.result.message_id,
                 }) 
                 
             }
                                                                 
-            return res.status(200).json(sendTextToTelegram);
+            return res.status(200).json({});
         } catch (error) {
             return res.status(500).json(error.message);
         }
