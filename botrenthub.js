@@ -27,9 +27,10 @@ app.use('/', router)
 
 //подключение к БД PostreSQL
 const sequelize = require('./botrenthub/connections/db')
+const sequelizeR = require('./botrenthub/connections/db_renthub')
 const { Op } = require('sequelize')
-const {UserBot, Message, Conversation, Manager, Company, ProjectNew, Project } = require('./botrenthub/models/models');
-
+const {UserBot, Message, Conversation, Manager, Company, Project } = require('./botrenthub/models/models');
+const { ProjectNew } = require('./botrenthub/models/modelsR');
 //socket.io
 const {io} = require("socket.io-client")
 const socketUrl = process.env.SOCKET_APP_URL
@@ -37,6 +38,7 @@ const socketUrl = process.env.SOCKET_APP_URL
 const sendMyMessage = require('./botrenthub/common/sendMyMessage');
 const getManagerNotion = require("./botrenthub/common/getManagerNotion");
 const addManager = require("./botrenthub/common/addManager");
+const addMainSpec = require("./botrenthub/common/addMainSpec");
 
 const chatTelegramId = process.env.CHAT_ID
 const chatGroupId = process.env.CHAT_GROUP_ID
@@ -345,21 +347,31 @@ bot.on('message', async (msg) => {
 //-------------------------------------------------------------------------------------------------------------------------------
 //--------------------------- Создание проекта ----------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------
-                //const crm = await sequelize.query("SELECT nextval('crm_id')");
-
-                //const resid = crm[0][0].nextval
-
-
             try {
-                //создание проекта в БД
-                const resAdd2 = await ProjectNew.create({               
-                    //crmID: resid.toString(),
+                const crm = await sequelizeR.query("SELECT nextval('crm_id')");
+
+                const resid = crm[0][0].nextval
+
+                // const res = await Project.create({ 
+                //     name: projectName, 
+                //     datestart: dateStart, 
+                //     spec: JSON.stringify(specArr),
+                //     equipment: JSON.stringify(equipArr),
+                //     teh: Teh, 
+                //     geo: Geo, 
+                //     managerId: manager_id, 
+                //     companyId: company_id, 
+                //     chatId: chatId
+                // })
+
+                const obj = {                
+                    crmID: resid.toString(),
                     name: projectName,
                     status: 'Новый',
                     //specifika: '',
                     //city: '',
-                    dateStart: dateStart + ':00.000Z', 
-                    dateEnd: '', 
+                    dateStart: dateStart + ':00.000Z',  
+                    //dateEnd: project?.dateend, 
                     teh: Teh,
                     geo: Geo,
                     managerId: manager_id,
@@ -368,7 +380,29 @@ bot.on('message', async (msg) => {
                     spec: JSON.stringify(specArr),  
                     comment: '',
                     equipment: JSON.stringify(equipArr),
-                })
+                }
+                console.log("obj :", obj)
+
+                const resAdd2 = await ProjectNew.create(obj)
+                console.log("resAdd2: ", resAdd2)
+
+                if (resAdd2) {
+                    const startD = resAdd2.dateStart?.split('T')[0].split('-')[2] + '.' + resAdd2.dateStart?.split('-')[1] + '.' + resAdd2.dateStart?.split('-')[0]
+                    const startT = resAdd2.dateStart?.split('T')[1]?.slice(0, 5)
+                    //добавление специалистов в основной состав
+                    const dateStart = startD + 'T' + startT
+
+
+                    //добавить список работников        
+                    Worklist.forEach((worker, index) => {           
+                        for (let i = 0; i < worker.count; i++) {
+                            setTimeout(async()=> {
+                                const res = await addMainSpec(resAdd2?.id, dateStart, worker.spec, '№1');
+                                console.log("res add spec main: ", res, index+1) 
+                            }, 300 * i) 
+                        }    
+                    });                   
+                }
 
                 //очистить переменные
                 console.log("Очищаю переменные...")
@@ -388,7 +422,7 @@ bot.on('message', async (msg) => {
                 // отправить сообщение пользователю через 30 секунд
                 setTimeout(() => {bot.sendMessage(chatId, 'Ваша заявка принята!')}, 25000) // 30 секунд                   
                 
-                const project2 = await ProjectNew.findOne({where:{id: resAdd2.id}})  
+                //const project2 = await ProjectNew.findOne({where:{id: resAdd2.id}})  
                 
                 //начать получать отчеты
                 //getReports(project2, bot, currentProcess, dataProcess, dataInterval, dataTime)
