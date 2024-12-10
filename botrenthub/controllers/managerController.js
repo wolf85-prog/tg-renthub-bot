@@ -17,6 +17,7 @@ const socketUrl = process.env.SOCKET_APP_URL
 const $host = axios.create({
     baseURL: process.env.REACT_APP_API_URL
 })
+const chatTelegramId = process.env.CHAT_ID
 
 const sendMessageAdmin = require("../common/sendMessageAdmin");
 
@@ -466,7 +467,7 @@ ${avatar}`
                 let socket = io(socketUrl);
                 socket.emit("sendAdminSpec", {
                     senderId: chatTelegramId,
-                    receiverId: chatId,
+                    receiverId: id,
                     text: text,
                     convId: convId,
                     messageId: sendTextToTelegram.message_id,
