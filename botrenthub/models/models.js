@@ -45,10 +45,6 @@ const Message = sequelize.define('message', {
     replyId: {type: DataTypes.STRING}, //id пересылаемого сообщения
 })
 
-const Conversation = sequelize.define('conversation', {
-    members: {type: DataTypes.ARRAY(DataTypes.STRING)},
-})
-
 const Distribution = sequelize.define('distribution', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
     text: {type: DataTypes.STRING}, //текст сообщения;
@@ -125,7 +121,7 @@ module.exports = {
     Manager,
     Company,
     Message, 
-    Conversation, 
+    
     Distribution,
     ProjectNew,
 }

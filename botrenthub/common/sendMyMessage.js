@@ -2,7 +2,8 @@ require("dotenv").config();
 
 //подключение к БД PostreSQL
 const sequelize = require('./../../botrenthub/connections/db')
-const {Message, Conversation} = require('./../../botrenthub/models/models')
+const {Message} = require('./../../botrenthub/models/models')
+const {Conversation} = require('./../../botrenthub/models/modelsR')
 const chatTelegramId = process.env.CHAT_ID
 const { Op } = require('sequelize')
 

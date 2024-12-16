@@ -59,9 +59,14 @@ const MainSpec = sequelize.define('mainspec', {
     count: {type: DataTypes.INTEGER},
 })
 
+const Conversation = sequelize.define('conversation', {
+    members: {type: DataTypes.ARRAY(DataTypes.STRING)},
+})
+
 
 module.exports = {
     Report,
     ProjectNew,
     MainSpec,
+    Conversation, 
 }
