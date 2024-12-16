@@ -6,6 +6,9 @@ const token = process.env.TELEGRAM_API_TOKEN_PROJECT
 
 const bot = new TelegramBot(token, {polling: true })
 
+// web-приложение
+const webAppUrl = process.env.WEB_APP_URL;
+
 const express = require('express');
 const cors = require('cors');
 const https = require('https');
@@ -210,6 +213,14 @@ bot.on('message', async (msg) => {
 
                 //Привет!
                 await bot.sendPhoto(chatId, 'https://proj.uley.team/upload/2024-04-02T06:20:12.952Z.jpg')
+
+                // await bot.sendPhoto(chatId, 'https://proj.uley.team/upload/2024-05-18T09:08:53.561Z.jpg', {
+                //     reply_markup: ({
+                //         inline_keyboard:[
+                //             [{text: 'Поехали!', web_app: {url: webAppUrl}}],
+                //         ]
+                //     })
+                // })
 
                 const messageDB = await Message.create(
                 {
