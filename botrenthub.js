@@ -110,18 +110,18 @@ ${worklist.map(item =>' - ' + item.spec + ' = ' + item.count + ' чел.').join(
         })
         
         //отправить сообщение в чат-админку (телеграм)
-//         await bot.sendMessage(chatGroupId, 
-// `Проект успешно создан! ${ companyId === 'Локальный заказчик' ? 'Offline' : ''} 
+        await bot.sendMessage(chatGroupId, 
+`Проект успешно создан! ${ companyId === 'Локальный заказчик' ? 'Offline' : ''} 
   
-// Название проекта:  ${projectname} 
-// Дата: ${day}.${month}.${year}
-// Время: ${chas}:${minut} 
-// Адрес: ${geo} 
-// Тех. задание: ${teh} 
+Название проекта:  ${projectname} 
+Дата: ${day}.${month}.${year}
+Время: ${chas}:${minut} 
+Адрес: ${geo} 
+Тех. задание: ${teh} 
   
-// Специалисты:  
-// ${worklist.map(item => ' - ' + item.spec + ' = ' + item.count + ' чел.').join('\n')}`
-//           )
+Специалисты:  
+${worklist.map(item => ' - ' + item.spec + ' = ' + item.count + ' чел.').join('\n')}`
+          )
 
         } 
   
