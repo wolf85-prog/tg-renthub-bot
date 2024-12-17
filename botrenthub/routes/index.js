@@ -5,6 +5,7 @@ const router = new Router()
 const managerController = require('./../controllers/managerController')
 //const databaseController = require('../controllers/databaseController')
 //const blockController = require('../controllers/blockController')
+const posterController = require('../controllers/posterController')
 
 
 // get PROJECTS  
@@ -36,5 +37,9 @@ router.post('/managers/send/:id', managerController.sendAvatar)
 router.get("/companys", managerController.companys);
 router.get("/company/:id", managerController.company);
 router.get("/company/name/:id", managerController.companyName);
+
+//-----------------POSTER ОТПРАВКА СМЕТЫ---------------------------------
+router.post('/poster/send', posterController.sendPoster)
+router.post('/poster/final/send', posterController.sendPosterFinal)
 
 module.exports = router
