@@ -76,7 +76,7 @@ app.post('/web-data', async (req, res) => {
     try {
         if (worklist.length > 0) {
 
-            console.log("Начинаю сохранять данные по заявке...")
+            console.log("Начинаю сохранять данные по заявке...", managerId, companyId,)
             projectName = projectname
             projectDate = `${day}.${month}`
             projectTime = `${chas}:${minut}`
