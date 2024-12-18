@@ -328,7 +328,7 @@ bot.on('message', async (msg) => {
                 socket.emit("addUser", chatId)
                 
                 //отправить сообщение в админку
-                socket.emit("sendMessageSpec", {
+                socket.emit("sendMessageRent", {
                     senderId: chatId,
                     receiverId: chatTelegramId,
                     text: text_contact,
@@ -380,7 +380,7 @@ bot.on('message', async (msg) => {
                         // Подключаемся к серверу socket
                         let socket = io(socketUrl);
                         socket.emit("addUser", chatId)
-                        socket.emit("sendMessageSpec", {
+                        socket.emit("sendMessageRent", {
                             senderId: chatId,
                             receiverId: chatTelegramId,
                             text: `${botApiUrl}/${msg.document.file_name}`.replaceAll(/\s/g, '_'),
@@ -433,7 +433,7 @@ bot.on('message', async (msg) => {
                             //console.log("users from bot: ", users);
                         //})
 
-                        socket.emit("sendMessageSpec", {
+                        socket.emit("sendMessageRent", {
                             senderId: chatId,
                             receiverId: chatTelegramId,
                             text: `${botApiUrl}/${filename}.jpg`,
@@ -490,7 +490,7 @@ bot.on('message', async (msg) => {
                         //Подключаемся к серверу socket
                         let socket = io(socketUrl);
                         socket.emit("addUser", chatId)
-                        socket.emit("sendMessageSpec", {
+                        socket.emit("sendMessageRent", {
                             senderId: chatId,
                             receiverId: chatTelegramId,
                             text: `${botApiUrl}/${msg.voice.file_unique_id}.${ras[1]}`,
