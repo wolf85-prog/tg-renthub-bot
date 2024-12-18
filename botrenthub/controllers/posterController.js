@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { Client } = require("@notionhq/client");
+
 const chatTelegramId = process.env.CHAT_ID
 //fetch api
 const axios = require("axios");
@@ -56,7 +56,7 @@ class PosterController {
             //socket.emit("addUser", chatId)
 
             // //сохранить в контексте (отправка) сметы в админку
-            socket.emit("sendAdmin", { 
+            socket.emit("sendAdminRent", { 
                 senderId: chatTelegramId,
                 receiverId: chatId,
                 text: poster,
@@ -109,7 +109,7 @@ class PosterController {
             //socket.emit("addUser", chatId)
 
             // //сохранить в контексте (отправка) сметы в админку
-            socket.emit("sendAdmin", { 
+            socket.emit("sendAdminRent", { 
                 senderId: chatTelegramId,
                 receiverId: chatId,
                 text: poster,

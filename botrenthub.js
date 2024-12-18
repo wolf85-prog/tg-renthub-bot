@@ -525,7 +525,7 @@ bot.on('message', async (msg) => {
             socket.emit("addUser", chatId)
             
             //отправить сообщение в админку
-            socket.emit("sendMessage", {
+            socket.emit("sendMessageRent", {
                 senderId: chatId,
                 receiverId: chatTelegramId,
                 text: text,

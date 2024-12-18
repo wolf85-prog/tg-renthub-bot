@@ -467,7 +467,7 @@ ${avatar}`
                 
                 // Подключаемся к серверу socket
                 let socket = io(socketUrl);
-                socket.emit("sendMessage", {
+                socket.emit("sendMessageRent", {
                     senderId: id,
                     receiverId: chatTelegramId,
                     text: text,
