@@ -95,7 +95,7 @@ module.exports = async function getReports(project, bot) {
         // 1-й отчет
         if (i < 1) {
 
-                const d = new Date(project.datestart);
+                const d = new Date(project.dateStart);
                 const month = String(d.getMonth()+1).padStart(2, "0");
                 const day = String(d.getDate()).padStart(2, "0");
                 const chas = d.getHours();
