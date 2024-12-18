@@ -148,7 +148,7 @@ bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
     const firstname = msg.from.first_name
     const lastname = msg.from.last_name
-    const username = msg.from.username
+    const username = msg.from.username ? msg.from.username : ''
     const text = msg.text ? msg.text : '';
     const messageId = msg.message_id;
 
@@ -164,7 +164,7 @@ bot.on('message', async (msg) => {
             } else {
                 console.log('Отмена добавления в БД. Пользователь уже существует')
                 
-                console.log('Обновление ника...')
+                console.log('Обновление ника...', username)
                 const res = await UserBot.update({ 
                     username: username,
                 },
