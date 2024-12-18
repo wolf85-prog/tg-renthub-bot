@@ -311,20 +311,11 @@ bot.on('message', async (msg) => {
             }
         }
         
-        if (text === '/sensmeta ') {
+        if (text === '/sendsmeta') {
             try {
                         //const poster = 'https://proj.uley.team/files/1389/pre/1389_1408579113_customer.pdf'
                         const poster = `${host}/files/3417/pre/3417_434263815_customer_3.pdf`
                         console.log("poster API: ", poster)         
-                        //console.log("projectId pred smeta: ", project_id)
-            
-                        //Передаем данные боту
-                        const keyboard = JSON.stringify({
-                            inline_keyboard:[
-                                [{text: 'Подтвердить смету', callback_data:'/smeta '}],
-                                [{text: 'Предложить свою цену', web_app: {url: webAppUrl+'/add-stavka/'}}],
-                            ]
-                        });
             
                         console.log("Отправляю постер...")
                         //const url_send_poster = `https://api.telegram.org/bot${token}/sendDocument?chat_id=${chatId}&document=${poster}&reply_markup=${keyboard}`

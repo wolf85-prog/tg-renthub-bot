@@ -41,15 +41,15 @@ module.exports = async function sendMessageAdmin(text, typeText, chatId, message
 
         const messageDB = await Message.create(
         {
-            text: text, 
+            conversationId: conversation_id,
             senderId: chatTelegramId, 
             receiverId: chatId,
-            type: typeText,
-            conversationId: conversation_id,
-            messageId: messageId,
-            replyId: replyId,
+            text: text,
+            type: typeText, 
             isBot,
-            buttons
+            messageId: messageId,
+            buttons,
+            replyId: replyId,
         })
         console.log("messageDB: ", messageDB)
 
