@@ -48,7 +48,7 @@ class PosterController {
 
 
             //сохранение сметы в базе данных
-            const convId = await sendMessageAdmin(poster, "image", chatId, response2.data?.result?.message_id, false, 'Подтверждаю')
+            const convId = await sendMessageAdmin(poster, "image", chatId, response2.data?.result?.message_id, null, false, 'Подтверждаю')
             //console.log("convId: ", convId)
 
             // Подключаемся к серверу socket
@@ -102,7 +102,7 @@ class PosterController {
             //console.log("messageId: ", response2)
 
             //сохранение сметы в базе данных
-            const convId = await sendMessageAdmin(poster, "image", chatId, response2.data?.result?.message_id, null, null, 'Подтверждаю')
+            const convId = await sendMessageAdmin(poster, "image", chatId, response2.data?.result?.message_id, null, false, 'Подтверждаю')
 
             // Подключаемся к серверу socket
             let socket = io(socketUrl);
