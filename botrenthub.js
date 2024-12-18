@@ -705,6 +705,167 @@ bot.on('message', async (msg) => {
     }
 })
 
+//--------------------------------------------------------------------------------------------------------------------
+  
+  //Ответ на нажатие кнопок настройки и информаци
+  bot.on('callback_query', async (msg) => {
+    const data = msg.data;
+    const chatId = msg.message.chat.id;
+    const messageId = msg.message.message_id;
+  
+    if (data === '/menu') {
+        return bot.sendMessage(chatId, 'Смотрите и создавайте Notion-проекты в web-приложении прямо из мессенджера Telegram.', {
+            reply_markup: ({
+                inline_keyboard:[
+                    [{text: 'Информация', callback_data:'Информация'}, {text: 'Настройки', callback_data:'Настройки'}],
+                    [{text: 'Открыть Notion-проекты', web_app: {url: webAppUrl}}],
+                ]
+            })
+        })
+    }
+
+    //предварительная смета
+    if (data.startsWith('/smeta')) {
+        const projectId = data.split(' ');
+        console.log("projectId: ", projectId[1])
+        console.log("Начинаю обрабатывать запрос подтверждения сметы...")
+
+        //const crmId = await getProject(projectId[1])
+
+        // const block1 = await getBlock(projectId[1])
+        // console.log("block1: ", block1.results[0].id)
+                        
+        // const block2 = await getBlock(block1.results[0].id)
+        // console.log("block2: ", block2.results[0].id)
+                        
+        // const block3 = await getBlock(block2.results[0].id)
+        // console.log("block3: ", block3.results[0].id)  
+        
+            
+        // if (block3) {
+        //     //поставить галочку в проекте в поле Предварительная смета
+        //     await updateToDo(block3.results[0].id); 
+        // } else {
+        //     console.log("Ошибка установки чека")
+        // }
+
+        //const poster = `${host}/files/${crmId}/pre/${crmId}_${chatId}_customer_1.pdf`
+        //console.log("poster: ", poster)
+        
+
+        // Подключаемся к серверу socket
+        let socket = io(socketUrl);
+        socket.emit("addUser", chatId)
+
+        //отправить сообщение об одобрении сметы проекта в админ-панель
+        const convId = await sendMyMessage('Предварительная смета одобрена!', "text", chatId, messageId)
+
+        socket.emit("sendMessageRent", {
+            senderId: chatId,
+            receiverId: chatTelegramId,
+            text: 'Предварительная смета одобрена!',
+            convId: convId,
+            messageId: messageId,
+            replyId: ''
+        })
+
+        return bot.sendMessage(chatId, 'Предварительная смета одобрена!')
+    }
+
+    //финальная смета
+    if (data.startsWith('/finalsmeta')) {
+        const projectId = data.split(' ');
+        console.log("projectId: ", projectId[1])
+        console.log("Начинаю обрабатывать запрос подтверждения финальной сметы...")
+
+        // Подключаемся к серверу socket
+        let socket = io(socketUrl);
+        socket.emit("addUser", chatId)
+
+        //отправить сообщение об одобрении сметы проекта в админ-панель
+        const convId = await sendMyMessage('Финальная смета одобрена!', "text", chatId, messageId)
+
+        socket.emit("sendMessageRent", {
+            senderId: chatId,
+            receiverId: chatTelegramId,
+            text: 'Финальная смета одобрена!',
+            convId: convId,
+            messageId: messageId,
+            replyId: ''
+        })
+        
+        // const block1 = await getBlock(projectId[1])
+        // console.log("block1: ", block1.results[0].id) //первый объект (to do)
+
+        // //pre final                     
+        // const block2_1 = await getBlock(block1.results[0].id)
+        // console.log("block2_1: ", block2_1.results[0].id) // 1-й объект (предварительная смета и финальная смета)
+                        
+        // const block3_1 = await getBlock(block2_1.results[0].id)
+        // console.log("block3_1: ", block3_1.results[0].id) // 1-й объект (предварительная смета)
+
+        // const block3_2 = await getBlock(block2_1.results[0].id)
+        // console.log("block3_2: ", block3_2.results[1].id) // 2-й объект (финальная смета)
+
+
+        // if (block3_2) {
+        //     //поставить галочку в проекте в поле Финальная смета
+        //     await updateToDoFinal(block3_2.results[1].id); //22.03.2024
+        // } else {
+        //     console.log("Ошибка установки чека")
+        // }  
+
+        //найти смету по свойству Проект
+        //const smetaId = await getSmeta(projectId[1])
+        
+
+        return bot.sendMessage(chatId, 'Финальная смета одобрена!')
+    }
+
+    //кнопка в отчете
+    if (data === '/report_accept') {
+
+        //отправить сообщение о создании проекта в админ-панель
+        const convId = await sendMyMessage('Информация подтверждена', "text", chatId, messageId)
+
+        // Подключаемся к серверу socket
+        let socket = io(socketUrl);
+        socket.emit("addUser", chatId)
+        socket.emit("sendMessage", {
+            senderId: chatId,
+            receiverId: chatTelegramId,
+            text: 'Информация подтверждена',
+            convId: convId,
+            messageId: messageId,
+        })
+
+
+        return bot.sendMessage(chatId, 'Информация подтверждена')
+    }
+
+    if (data === '/report') {
+
+        //отправить сообщение о создании проекта в админ-панель
+        const convId = await sendMyMessage('Пользователь нажал кнопку в рассылке', "text", chatId)
+
+        // Подключаемся к серверу socket
+        let socket = io(socketUrl);
+        socket.emit("addUser", chatId)
+        socket.emit("sendMessage", {
+            senderId: chatId,
+            receiverId: chatTelegramId,
+            text: 'Пользователь нажал кнопку в рассылке',
+            convId: convId,
+            messageId: messageId,
+        })
+
+
+        return bot.sendMessage(chatId, 'Ваша заявка принята! Мы свяжемся с вами в ближайшее время.')
+    }
+
+    bot.sendMessage(chatId, `Вы нажали кнопку ${data}`, backOptions)
+  });
+
 
 //-------------------------------------------------------------------------------------------------------------------------------
 const PORT = process.env.PORT || 8002;
