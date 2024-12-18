@@ -102,7 +102,7 @@ class PosterController {
             //console.log("messageId: ", response2)
 
             //сохранение сметы в базе данных
-            const convId = await sendMessageAdmin(poster, "image", chatId, response2.data?.result?.message_id, true, 'Подтверждаю')
+            const convId = await sendMessageAdmin(poster, "image", chatId, response2.data?.result?.message_id, null, null, 'Подтверждаю')
 
             // Подключаемся к серверу socket
             let socket = io(socketUrl);

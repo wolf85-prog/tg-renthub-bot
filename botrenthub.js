@@ -345,9 +345,9 @@ bot.on('message', async (msg) => {
                             messageId: response2.data?.result?.message_id,
                         })
             
-                        return res.status(200).json("Poster has been sent successfully");
+                        //return res.status(200).json("Poster has been sent successfully");
                     } catch (error) {
-                        return res.status(500).json(error.message);
+                        return console.log(error.message);
                     }
         }
 
