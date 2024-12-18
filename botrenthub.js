@@ -160,7 +160,7 @@ bot.on('message', async (msg) => {
             //добавить пользователя в бд
             const user = await UserBot.findOne({where:{chatId: chatId.toString()}})
             if (!user) {
-                await UserBot.create({ firstname: firstname, lastname: lastname, chatId: chatId, username: username })
+                await UserBot.create({ firstname: firstname, lastname: lastname, chatId: chatId, username: username, block: false })
                 console.log('Пользователь добавлен в БД')
             } else {
                 console.log('Отмена добавления в БД. Пользователь уже существует')
@@ -703,7 +703,7 @@ bot.on('message', async (msg) => {
                 //добавить пользователя в бд
                 const user = await UserBot.findOne({where:{chatId: chatId.toString()}})
                 if (!user) {
-                    await UserBot.create({ firstname: firstname, lastname: lastname, chatId: chatId, username: username })
+                    await UserBot.create({ firstname: firstname, lastname: lastname, chatId: chatId, username: username, block: false })
                     console.log('Пользователь добавлен в БД')
                 } else {
                     console.log('Отмена добавления в БД. Пользователь уже существует')
