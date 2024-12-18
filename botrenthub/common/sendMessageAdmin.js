@@ -50,6 +50,7 @@ module.exports = async function sendMyMessageAdmin(text, typeText, chatId, messa
             replyId: replyId,
             isBot,
         })
+        console.log("messageDB: ", messageDB)
 
         return conversation_id;
     } catch (error) {
