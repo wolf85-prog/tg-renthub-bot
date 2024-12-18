@@ -704,7 +704,7 @@ bot.on('message', async (msg) => {
                 const user = await UserBot.findOne({where:{chatId: chatId.toString()}})
                 if (!user) {
                     console.log('Начинаю сохранять данные пользователя...')
-                    await UserBot.create({ chatId: chatId })
+                    await UserBot.create({ firstname: firstname, lastname: lastname, chatId: chatId, username: username })
                     console.log('Пользователь добавлен в БД')
                 } else {
                     console.log('Отмена добавления в БД. Пользователь уже существует')
