@@ -6,6 +6,9 @@ const token = process.env.TELEGRAM_API_TOKEN_PROJECT
 
 const bot = new TelegramBot(token, {polling: true })
 
+//fetch api
+const fetch = require('node-fetch');
+
 // web-приложение
 const webAppUrl = process.env.WEB_APP_URL;
 
@@ -302,6 +305,206 @@ bot.on('message', async (msg) => {
                 console.error(err.toJSON())
             }
         }
+
+        //------------------------------------------------------------------------------------------------
+        //обработка контактов
+        if (msg.contact) {
+            await bot.sendMessage(chatId, `Ваш контакт получен!`)
+            const phone = msg.contact.phone_number
+            const firstname = msg.contact.first_name
+            const lastname = msg.contact.last_name ? msg.contact.last_name : ''
+            
+            //const response = await bot.sendContact(chatTelegramId, phone, firstname, lastname, vcard)  
+            //const response2 = await bot.sendContact(chatGiaId, phone, firstname, lastname, vcard)   
+            const text_contact = `${phone} ${firstname} ${lastname}`
+
+            console.log("Отправляю контакт в админ-панель...")
+
+            //отправить сообщение о контакте в админ-панель
+            const convId = await sendMyMessage(text_contact, "text", chatId, messageId, null, false)
+                
+                // Подключаемся к серверу socket
+                let socket = io(socketUrl);
+                socket.emit("addUser", chatId)
+                
+                //отправить сообщение в админку
+                socket.emit("sendMessageSpec", {
+                    senderId: chatId,
+                    receiverId: chatTelegramId,
+                    text: text_contact,
+                    type: 'text',
+                    convId: convId,
+                    messageId: messageId,
+                    isBot: false,
+                })
+        }
+        //--------------------------------------------------------------------------------------------------
+        //обработка документов
+        if (msg.document) {
+            console.log(msg.document)
+            const docum = await bot.getFile(msg.document.file_id);
+            try {
+                const res = await fetch(
+                    `https://api.telegram.org/bot${token}/getFile?file_id=${docum.file_id}`
+                );
+
+                // extract the file path
+                const res2 = await res.json();
+                const filePath = res2.result.file_path;
+
+                // now that we've "file path" we can generate the download link
+                const downloadURL = `https://api.telegram.org/file/bot${token}/${filePath}`;
+
+                https.get(downloadURL,(res) => {
+                    const filename = Date.now()
+                    // Image will be stored at this path
+                    let path;
+                    let ras;
+                    if(msg.document) {
+                        ras = msg.document.mime_type.split('/')
+                        //path = `${__dirname}/static/${filename}.${ras[1]}`; 
+                        path = `${__dirname}/static/${msg.document.file_name}`.replaceAll(/\s/g, '_'); 
+                    }
+                    const filePath = fs.createWriteStream(path);
+                    res.pipe(filePath);
+                    filePath.on('finish', async () => {
+                        filePath.close();
+                        console.log('Download Completed: ', path); 
+                        
+                        let convId;
+                        if(msg.document) {
+                            // сохранить отправленное боту сообщение пользователя в БД
+                            convId = await sendMyMessage(`${botApiUrl}/${msg.document.file_name}`.replaceAll(/\s/g, '_'), 'file', chatId, messageId)
+                        }
+
+                        // Подключаемся к серверу socket
+                        let socket = io(socketUrl);
+                        socket.emit("addUser", chatId)
+                        socket.emit("sendMessageSpec", {
+                            senderId: chatId,
+                            receiverId: chatTelegramId,
+                            text: `${botApiUrl}/${msg.document.file_name}`.replaceAll(/\s/g, '_'),
+                            convId: convId,
+                            isBot: false,
+                        })
+                    })
+                })
+            } catch (error) {
+                console.log(error.message)
+            }
+        }
+        //----------------------------------------------------------------------------------------------------------------          
+        //обработка изображений
+        if (msg.photo) {
+            console.log(msg.photo)
+            //console.log(msg.photo.length)
+            const image = await bot.getFile(msg.photo[msg.photo.length-1].file_id);
+
+            try {
+                const res = await fetch(
+                    `https://api.telegram.org/bot${token}/getFile?file_id=${image.file_id}`
+                );
+
+                // extract the file path
+                const res2 = await res.json();
+                const filePath = res2.result.file_path;
+
+                // now that we've "file path" we can generate the download link
+                const downloadURL = `https://api.telegram.org/file/bot${token}/${filePath}`;
+
+                https.get(downloadURL,(res) => {
+                    const filename = Date.now()
+                    // Image will be stored at this path
+                    const path = `${__dirname}/static/${filename}.jpg`; 
+                    const filePath = fs.createWriteStream(path);
+                    res.pipe(filePath);
+                    filePath.on('finish', async () => {
+                        filePath.close();
+                        console.log('Download Completed: ', path); 
+                        
+                        // сохранить отправленное боту сообщение пользователя в БД
+                        const convId = await sendMyMessage(`${botApiUrl}/${filename}.jpg`, 'image', chatId, messageId)
+
+                        // Подключаемся к серверу socket
+                        let socket = io(socketUrl);
+
+                        socket.emit("addUser", chatId)
+                        //socket.on("getUsers", users => {
+                            //console.log("users from bot: ", users);
+                        //})
+
+                        socket.emit("sendMessageSpec", {
+                            senderId: chatId,
+                            receiverId: chatTelegramId,
+                            text: `${botApiUrl}/${filename}.jpg`,
+                            type: 'image',
+                            convId: convId,
+                        })
+                    })
+                })            
+            } catch (error) {
+                console.log(error.message)
+            }
+        }
+        //---------------------------------------------------------------------------------------------------------------
+
+        //обработка аудио сообщений
+        if (msg.voice) {
+            await bot.sendMessage(chatId, `Ваше аудио-сообщение получено!`)
+            const voice = await bot.getFile(msg.voice.file_id);
+
+            try {
+                const res = await fetch(
+                    `https://api.telegram.org/bot${token}/getFile?file_id=${voice.file_id}`
+                );
+
+                // extract the file path
+                const res2 = await res.json();
+                const filePath = res2.result.file_path;
+
+                // now that we've "file path" we can generate the download link
+                const downloadURL = `https://api.telegram.org/file/bot${token}/${filePath}`;
+
+                https.get(downloadURL,(res) => {
+                    const filename = Date.now()
+                    // Image will be stored at this path
+                    let path;
+                    let ras;
+                    if(msg.voice) {
+                        ras = msg.voice.mime_type.split('/')
+                        //path = `${__dirname}/static/${filename}.${ras[1]}`; 
+                        path = `${__dirname}/static/${msg.voice.file_unique_id}.${ras[1]}`; 
+                    }
+                    const filePath = fs.createWriteStream(path);
+                    res.pipe(filePath);
+                    filePath.on('finish', async () => {
+                        filePath.close();
+                        console.log('Download Completed: ', path); 
+                        
+                        let convId;
+                        if(msg.voice) {
+                            // сохранить отправленное боту сообщение пользователя в БД
+                            convId = await sendMyMessage(`${botApiUrl}/${msg.voice.file_unique_id}.${ras[1]}`, 'file', chatId, messageId)
+                        }
+
+                        //Подключаемся к серверу socket
+                        let socket = io(socketUrl);
+                        socket.emit("addUser", chatId)
+                        socket.emit("sendMessageSpec", {
+                            senderId: chatId,
+                            receiverId: chatTelegramId,
+                            text: `${botApiUrl}/${msg.voice.file_unique_id}.${ras[1]}`,
+                            convId: convId,
+                            isBot: false,
+                        })
+                    })
+                })            
+            } catch (error) {
+                console.log(error.message)
+            }
+        }
+
+//---------------------------------------------------------------------------------------------------------------- 
 
         //обработка сообщений    
         if ((text || '')[0] !== '/' && text) {       
