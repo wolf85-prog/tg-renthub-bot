@@ -41,8 +41,8 @@ app.use('/', router)
 const sequelize = require('./botrenthub/connections/db')
 const sequelizeR = require('./botrenthub/connections/db_renthub')
 const { Op } = require('sequelize')
-const {UserBot, Message, Conversation, Manager, Company, Project } = require('./botrenthub/models/models');
-const { ProjectNew } = require('./botrenthub/models/modelsR');
+const {UserBot, Message, Manager, Company } = require('./botrenthub/models/models');
+const { ProjectNew, Conversation } = require('./botrenthub/models/modelsR');
 //socket.io
 const {io} = require("socket.io-client")
 const socketUrl = process.env.SOCKET_APP_URL
@@ -245,7 +245,7 @@ bot.on('message', async (msg) => {
                 })
 
             } catch (error) {
-                console.log(error.message)
+                console.log("Ошибка создания чата: ", error.message)
             }
         }
 
@@ -690,10 +690,10 @@ bot.on('message', async (msg) => {
                 
                                 
             } catch (error) {
-                console.log(error.message)
+                console.log("Ошибка сохранения проекта: ", error.message)
             }
             
-            } else {
+        } else {
 //----------------------------------------------------------------------------------------------------------------
                 //отправка сообщения 
                 // Подключаемся к серверу socket
@@ -703,6 +703,7 @@ bot.on('message', async (msg) => {
                 //добавить пользователя в бд
                 const user = await UserBot.findOne({where:{chatId: chatId.toString()}})
                 if (!user) {
+                    console.log('Начинаю сохранять данные пользователя...')
                     await UserBot.create({ firstname: firstname, lastname: lastname, chatId: chatId, username: username, block: false })
                     console.log('Пользователь добавлен в БД')
                 } else {
@@ -921,6 +922,9 @@ const start = async () => {
     try {
         await sequelize.authenticate()
         await sequelize.sync()
+
+        await sequelizeR.authenticate()
+        await sequelizeR.sync()
         
         httpsServer.listen(PORT, async() => {
             console.log('HTTPS Server BotRenthub running on port ' + PORT);
