@@ -28,6 +28,7 @@ let projectId, projectName, projectDate, projectTime, dateStart, manager_id, com
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static('tg-renthub-bot'));
 app.use(express.static(path.resolve(__dirname, 'static')))
 app.use('/', router)
 
@@ -42,8 +43,6 @@ const {io} = require("socket.io-client")
 const socketUrl = process.env.SOCKET_APP_URL
 
 const sendMyMessage = require('./botrenthub/common/sendMyMessage');
-const getManagerNotion = require("./botrenthub/common/getManagerNotion");
-const addManager = require("./botrenthub/common/addManager");
 const addMainSpec = require("./botrenthub/common/addMainSpec");
 
 const chatTelegramId = process.env.CHAT_ID
