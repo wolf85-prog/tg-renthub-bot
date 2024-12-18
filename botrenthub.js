@@ -50,6 +50,7 @@ const socketUrl = process.env.SOCKET_APP_URL
 const sendMyMessage = require('./botrenthub/common/sendMyMessage');
 const addMainSpec = require("./botrenthub/common/addMainSpec");
 const sendMessageAdmin = require('./botrenthub/common/sendMessageAdmin')
+const getReports = require('./botrenthub/common/getReports')
 
 const chatTelegramId = process.env.CHAT_ID
 const chatGroupId = process.env.CHAT_GROUP_ID
@@ -681,10 +682,10 @@ bot.on('message', async (msg) => {
                 // отправить сообщение пользователю через 30 секунд
                 setTimeout(() => {bot.sendMessage(chatId, 'Ваша заявка принята!')}, 25000) // 30 секунд                   
                 
-                //const project2 = await ProjectNew.findOne({where:{id: resAdd2.id}})  
+                const project2 = await ProjectNew.findOne({where:{id: resAdd2.id}})  
                 
                 //начать получать отчеты
-                //getReports(project2, bot, currentProcess, dataProcess, dataInterval, dataTime)
+                getReports(project2, bot)
                 
                                 
             } catch (error) {
@@ -922,6 +923,25 @@ const start = async () => {
         
         httpsServer.listen(PORT, async() => {
             console.log('HTTPS Server BotRenthub running on port ' + PORT);
+
+            // 1. получить новые проекты
+            let arr = []
+            const d = new Date().getTime() + 10800000
+
+            // 2. Отчеты проектов
+            setTimeout(()=>{
+                //запуск отчетов
+                console.log('Запускаю отчеты проектов...');
+                
+                // arr.map(async (project, i) => {
+                //     console.log(project?.name + " - " + project?.date)
+                    
+                //     setTimeout(function(){
+                //         //начать получать отчеты
+                //         getReportsTest(project.id, project.name, bot, currentProcess, dataProcess, dataInterval, dataTime)
+                //     }, 2000 * ++i)     
+                // })
+            }, 6000) 
 
         });
 
