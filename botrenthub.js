@@ -11,6 +11,7 @@ const fetch = require('node-fetch');
 
 // web-приложение
 const webAppUrl = process.env.WEB_APP_URL;
+const botApiUrl = process.env.REACT_APP_API_URL
 
 const express = require('express');
 const cors = require('cors');
