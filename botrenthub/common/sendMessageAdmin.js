@@ -6,7 +6,7 @@ const {Conversation} = require('./../../botrenthub/models/modelsR')
 const chatTelegramId = process.env.CHAT_ID
 const { Op } = require('sequelize')
 
-module.exports = async function sendMyMessageAdmin(text, typeText, chatId, messageId, replyId, isBot) {
+module.exports = async function sendMessageAdmin(text, typeText, chatId, messageId, replyId, isBot, buttons) {
     //создать беседу в админке в бд 
     //сохранить отправленное боту сообщение пользователя в БД
     let  conversation_id              
@@ -49,6 +49,7 @@ module.exports = async function sendMyMessageAdmin(text, typeText, chatId, messa
             messageId: messageId,
             replyId: replyId,
             isBot,
+            buttons
         })
         console.log("messageDB: ", messageDB)
 

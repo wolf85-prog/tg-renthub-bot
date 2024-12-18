@@ -336,7 +336,7 @@ bot.on('message', async (msg) => {
             
             
                         //сохранение сметы в базе данных
-                        const convId = await sendMessageAdmin(poster, "image", chatId, response2.data?.result?.message_id, false, 'Подтверждаю')
+                        const convId = await sendMessageAdmin(poster, "image", chatId, response2.data?.result?.message_id, null, false, 'Подтверждаю')
                         //console.log("convId: ", convId)
             
                         // Подключаемся к серверу socket
