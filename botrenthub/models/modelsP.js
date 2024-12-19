@@ -1,6 +1,16 @@
 const sequelize = require('../connections/db_renthub')
 const {DataTypes} = require('sequelize')
 
+const UserBot = sequelize.define('userbot', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    firstname: {type: DataTypes.STRING},
+    lastname: {type: DataTypes.STRING},
+    chatId: {type: DataTypes.STRING, unique: true},
+    username: {type: DataTypes.STRING},
+    avatar: {type: DataTypes.STRING},
+    block: {type: DataTypes.BOOLEAN},
+})
+
 const ProjectNew = sequelize.define('projectnew', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     crmID: {type: DataTypes.STRING},
@@ -65,6 +75,7 @@ const Conversation = sequelize.define('conversation', {
 
 
 module.exports = {
+    UserBot,
     Report,
     ProjectNew,
     MainSpec,

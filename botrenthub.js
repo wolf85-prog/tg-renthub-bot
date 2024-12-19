@@ -41,8 +41,8 @@ app.use('/', router)
 const sequelize = require('./botrenthub/connections/db')
 const sequelizeR = require('./botrenthub/connections/db_renthub')
 const { Op } = require('sequelize')
-const {UserBot, Message, Manager, Company } = require('./botrenthub/models/models');
-const { ProjectNew, Conversation } = require('./botrenthub/models/modelsR');
+const { Message, Manager, Company } = require('./botrenthub/models/models');
+const { UserBot, ProjectNew, Conversation } = require('./botrenthub/models/modelsP');
 //socket.io
 const {io} = require("socket.io-client")
 const socketUrl = process.env.SOCKET_APP_URL
@@ -160,7 +160,8 @@ bot.on('message', async (msg) => {
             //добавить пользователя в бд
             const user = await UserBot.findOne({where:{chatId: chatId.toString()}})
             if (!user) {
-                await UserBot.create({ firstname: firstname, lastname: lastname, chatId: chatId, username: username, block: false })
+                console.log('Начинаю сохранять данные пользователя...')
+                await UserBot.create({ firstname: firstname, lastname: lastname, chatId: chatId, username: username })
                 console.log('Пользователь добавлен в БД')
             } else {
                 console.log('Отмена добавления в БД. Пользователь уже существует')

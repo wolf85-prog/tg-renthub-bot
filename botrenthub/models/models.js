@@ -1,15 +1,6 @@
 const sequelize = require('../connections/db')
 const {DataTypes} = require('sequelize')
 
-const UserBot = sequelize.define('userbot', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    firstname: {type: DataTypes.STRING},
-    lastname: {type: DataTypes.STRING},
-    chatId: {type: DataTypes.STRING, unique: true},
-    username: {type: DataTypes.STRING},
-    block: {type: DataTypes.BOOLEAN},
-})
-
 const Manager = sequelize.define('manager', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     fio: {type: DataTypes.STRING},
