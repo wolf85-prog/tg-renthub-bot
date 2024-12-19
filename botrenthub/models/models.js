@@ -108,7 +108,6 @@ const ProjectNew = sequelize.define('projectnew', {
 
 
 module.exports = {
-    UserBot, 
     Manager,
     Company,
     Message, 
