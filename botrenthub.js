@@ -52,6 +52,8 @@ const addMainSpec = require("./botrenthub/common/addMainSpec");
 const sendMessageAdmin = require('./botrenthub/common/sendMessageAdmin')
 const getReports = require('./botrenthub/common/getReports')
 
+const {managerNotion} = require('./botrenthub/data/managerNotion')
+
 const chatTelegramId = process.env.CHAT_ID
 const chatGroupId = process.env.CHAT_GROUP_ID
 
@@ -352,6 +354,32 @@ bot.on('message', async (msg) => {
                     } catch (error) {
                         return console.log(error.message);
                     }
+        }
+
+        if (text === '/updatemanagerdb') {
+
+            const workers = managerNotion.reverse().map((page) => {            
+
+                return {
+                    id: page.id,
+                    fio: page.properties["ФИО"].title[0]?.plain_text,
+                };
+            });
+
+            console.log("arr_worker: ", workers.length)
+
+            workers.map(async (user, index) => {      
+                setTimeout(async()=> { 
+                    console.log(index + " Менеджер: " + user.fio + " сохранен!")
+
+                    //сохранение сообщения в базе данных wmessage
+                    await Manager.update({GUID: user.id},{where: {fio: user.fio}})
+
+                }, 500 * ++index) 
+
+            })
+                
+
         }
 
         //------------------------------------------------------------------------------------------------
