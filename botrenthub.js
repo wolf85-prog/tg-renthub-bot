@@ -55,7 +55,7 @@ const getReports = require('./botrenthub/common/getReports')
 const {managerNotion} = require('./botrenthub/data/managerNotion')
 
 const chatTelegramId = process.env.CHAT_ID
-const chatGroupId = process.env.CHAT_GROUP_ID
+const chatGroupId = process.env.CHAT_GROUP_ID2
 
 // Certificate
 const privateKey = fs.readFileSync('privkey.pem', 'utf8'); 
@@ -598,7 +598,7 @@ bot.on('message', async (msg) => {
             
             // Подключаемся к серверу socket
             let socket = io(socketUrl);
-            socket.emit("addUser", chatId)
+            //socket.emit("addUser", chatId)
             
             //отправить сообщение в админку
             socket.emit("sendMessageRent", {
