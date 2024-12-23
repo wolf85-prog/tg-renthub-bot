@@ -747,6 +747,22 @@ bot.on('message', async (msg) => {
                     })
                 }
 
+                // 2 (менеджер)
+                //поиск менеджера в бд
+                const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
+                            
+                if (!userW) {
+                    //добавление пользователя в БД MANAGERS
+                    await Manager.create({ 
+                        fio: lastname + ' ' + firstname,
+                        chatId: chatId,
+                    })
+                    console.log('Пользователь добавлен в БД managers')                   
+                                        
+                } else {
+                    console.log('Отмена операции! Пользователь уже существует в managers')
+                } 
+
                 //обработка пересылаемых сообщений
                 let str_text;
                 let reply_id;
