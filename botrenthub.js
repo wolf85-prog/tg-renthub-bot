@@ -975,7 +975,7 @@ bot.on('message', async (msg) => {
                 const url_send_msg = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${data.managerId}&parse_mode=html&text=${data.text.replace(/\n/g, '%0A')}`
 
                 const sendTextToTelegram = await $host.get(url_send_msg)
-                console.log("sendTextToTelegram: ", sendTextToTelegram)
+                //console.log("sendTextToTelegram: ", sendTextToTelegram)
 
                 //отправить сообщение в админ-панель
                 const convId = await sendMyMessage(text, "text", data.managerId, null)
@@ -990,7 +990,7 @@ bot.on('message', async (msg) => {
                 })
 
             } catch (error) {
-                console.error("Ошибка отправки мониторинга заказчику", url_send_msg)
+                console.error("Ошибка отправки мониторинга заказчику", error.message)
             }
     }
 }
