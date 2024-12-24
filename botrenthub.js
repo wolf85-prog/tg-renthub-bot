@@ -47,6 +47,8 @@ const { UserBot, ProjectNew, Conversation } = require('./botrenthub/models/model
 const {io} = require("socket.io-client")
 const socketUrl = process.env.SOCKET_APP_URL
 
+let socket = io(socketUrl);
+
 const sendMyMessage = require('./botrenthub/common/sendMyMessage');
 const addMainSpec = require("./botrenthub/common/addMainSpec");
 const sendMessageAdmin = require('./botrenthub/common/sendMessageAdmin')
@@ -960,6 +962,51 @@ bot.on('message', async (msg) => {
   });
 
 
+  const fetchNotif = async (dataAll) => {
+
+    let d = new Date()
+    d.setHours(d.getHours() + 3);
+
+	console.log("Получено уведомление: ", dataAll, d)
+	const { task, data } = dataAll;
+
+	if (task === 401) {
+
+       const text = 'Мониторинг проектов'
+
+       data.map(async(item, i)=> {
+        setTimeout(async() => {
+
+            try {
+                const url_send_msg = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${item.telegram_id}&parse_mode=html&text=${text.replace(/\n/g, '%0A')}`
+
+                const sendTextToTelegram = await $host.get(url_send_msg)
+                console.log("sendTextToTelegram: ", sendTextToTelegram)
+
+                //отправить сообщение в админ-панель
+                const convId = await sendMyMessage(text, "text", item.telegram_id, null)
+
+                socket.emit("sendMessageRent", {
+                    senderId: chatTelegramId,
+                    receiverId: item.telegram_id,
+                    text: text,
+                    convId: convId,
+                    messageId: null,
+                    replyId: ''
+                })
+
+            } catch (error) {
+                console.error("Ошибка отправки мониторинга заказчику", url_send_msg)
+            }
+            
+            
+        }, 1000 * ++i)
+})
+        
+    }
+}
+
+
 //-------------------------------------------------------------------------------------------------------------------------------
 const PORT = process.env.PORT || 8002;
 
@@ -973,6 +1020,10 @@ const start = async () => {
         
         httpsServer.listen(PORT, async() => {
             console.log('HTTPS Server BotRenthub running on port ' + PORT);
+
+            // Подключаемся к серверу socket
+            //let socket = io(socketUrl);
+            socket.on("getZakazchik", fetchNotif);
 
             // 1. получить новые проекты
             let arr = []
