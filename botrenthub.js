@@ -971,25 +971,19 @@ bot.on('message', async (msg) => {
 	const { task, data } = dataAll;
 
 	if (task === 401) {
-
-       const text = 'Мониторинг проектов'
-
-       data.map(async(item, i)=> {
-        setTimeout(async() => {
-
             try {
-                const url_send_msg = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${item.telegram_id}&parse_mode=html&text=${text.replace(/\n/g, '%0A')}`
+                const url_send_msg = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${data.managerId}&parse_mode=html&text=${data.text.replace(/\n/g, '%0A')}`
 
                 const sendTextToTelegram = await $host.get(url_send_msg)
                 console.log("sendTextToTelegram: ", sendTextToTelegram)
 
                 //отправить сообщение в админ-панель
-                const convId = await sendMyMessage(text, "text", item.telegram_id, null)
+                const convId = await sendMyMessage(text, "text", data.managerId, null)
 
                 socket.emit("sendMessageRent", {
                     senderId: chatTelegramId,
-                    receiverId: item.telegram_id,
-                    text: text,
+                    receiverId: data.managerId,
+                    text: data.text,
                     convId: convId,
                     messageId: null,
                     replyId: ''
@@ -998,11 +992,6 @@ bot.on('message', async (msg) => {
             } catch (error) {
                 console.error("Ошибка отправки мониторинга заказчику", url_send_msg)
             }
-            
-            
-        }, 1000 * ++i)
-})
-        
     }
 }
 
