@@ -29,7 +29,7 @@ const Message = sequelize.define('message', {
     conversationId: {type: DataTypes.STRING},
     senderId: {type: DataTypes.STRING},
     receiverId: {type: DataTypes.STRING},    
-    text: {type: DataTypes.STRING}, //текст сообщения;
+    text: {type: DataTypes.TEXT}, //текст сообщения;
     type: {type: DataTypes.STRING},      //тип сообщения;
     isBot: {type: DataTypes.BOOLEAN},
     messageId: {type: DataTypes.STRING},
@@ -77,42 +77,11 @@ const Company = sequelize.define('company', {
     comteg: {type: DataTypes.TEXT},
 })
 
-const ProjectNew = sequelize.define('projectnew', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-    crmID: {type: DataTypes.STRING},
-    name: {type: DataTypes.STRING},  //название проекта
-    status: {type: DataTypes.STRING},
-    specifika: {type: DataTypes.STRING},
-    city: {type: DataTypes.STRING},
-    dateStart: {type: DataTypes.STRING},  //дата начала проекта
-    dateEnd: {type: DataTypes.STRING},  //дата окончания проекта
-    teh: {type: DataTypes.TEXT},
-    geo: {type: DataTypes.STRING},
-    managerId: {type: DataTypes.STRING},
-    managerId2: {type: DataTypes.STRING},
-    companyId: {type: DataTypes.STRING},
-    chatId: {type: DataTypes.STRING},
-    spec: {type: DataTypes.STRING},
-    comment: {type: DataTypes.TEXT},
-    equipment: {type: DataTypes.STRING},
-    number: {type: DataTypes.INTEGER},
-    teh1: {type: DataTypes.STRING},
-    teh2: {type: DataTypes.STRING},
-    teh3: {type: DataTypes.STRING},
-    teh4: {type: DataTypes.STRING},
-    teh5: {type: DataTypes.STRING},
-    teh6: {type: DataTypes.STRING},
-    teh7: {type: DataTypes.STRING},
-    teh8: {type: DataTypes.STRING},
-    deleted: {type: DataTypes.BOOLEAN},
-})
-
 
 module.exports = {
     Manager,
     Company,
     Message, 
     Distribution,
-    ProjectNew,
 }
 
