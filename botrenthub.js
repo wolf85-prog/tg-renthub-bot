@@ -978,7 +978,7 @@ bot.on('message', async (msg) => {
                 //console.log("sendTextToTelegram: ", sendTextToTelegram)
 
                 //отправить сообщение в админ-панель
-                const convId = await sendMyMessage(text, "text", data.managerId, null)
+                const convId = await sendMessageAdmin(text, "text", data.managerId, null)
 
                 socket.emit("sendMessageRent", {
                     senderId: chatTelegramId,
