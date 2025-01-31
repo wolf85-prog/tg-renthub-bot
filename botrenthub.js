@@ -978,14 +978,14 @@ bot.on('message', async (msg) => {
                 //console.log("sendTextToTelegram: ", sendTextToTelegram)
 
                 //отправить сообщение в админ-панель
-                const convId = await sendMessageAdmin(data.text, "text", data.managerId, null)
+                const convId = await sendMessageAdmin(data.text, "text", data.managerId, sendTextToTelegram?.data?.result?.message_id)
 
                 socket.emit("sendMessageRent", {
                     senderId: chatTelegramId,
                     receiverId: data.managerId,
                     text: data.text,
                     convId: convId,
-                    messageId: null,
+                    messageId: sendTextToTelegram?.data?.result?.message_id,
                     replyId: ''
                 })
 
