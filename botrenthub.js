@@ -151,8 +151,8 @@ ${worklist.map(item => ' - ' + item.spec + ' = ' + item.count + ' чел.').join
 bot.on('message', async (msg) => {
     console.log("msg: ", msg)
     const chatId = msg.chat.id;
-    const firstname = msg.from.first_name
-    const lastname = msg.from.last_name
+    const firstname = msg.from.first_name ? msg.from.first_name : ''
+    const lastname = msg.from.last_name ? msg.from.last_name : ''
     const username = msg.from.username ? msg.from.username : ''
     const text = msg.text ? msg.text : '';
     const messageId = msg.message_id;
