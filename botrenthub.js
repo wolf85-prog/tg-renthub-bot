@@ -185,12 +185,25 @@ bot.on('message', async (msg) => {
             const userW = await Manager.findOne({where:{chatId: chatId.toString()}})
                         
             if (!userW) {
-                //добавление пользователя в БД MANAGERS
-                await Manager.create({ 
-                    fio: lastname + ' ' + firstname,
-                    chatId: chatId,
+
+                //добавление пользователя в БД COMPANYS
+                const resAddComp = await Company.create({ 
+                    title: 'Неизвестная компания',
                 })
-                console.log('Пользователь добавлен в БД managers')                   
+                console.log('Пользователь добавлен в БД COMPANYS', resAddComp) 
+
+                if (resAddComp) {
+                    //добавление пользователя в БД MANAGERS
+                    await Manager.create({ 
+                        fio: lastname + ' ' + firstname,
+                        chatId: chatId,
+                        companyId: resAddComp.id
+                    })
+                    console.log('Пользователь добавлен в БД managers')    
+                } else {
+                    console.log('Неудалось создать компанию')    
+                } 
+                
                                        
             } else {
                 console.log('Отмена операции! Пользователь уже существует в managers')
