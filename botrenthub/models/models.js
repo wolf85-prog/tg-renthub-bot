@@ -78,10 +78,18 @@ const Company = sequelize.define('company', {
 })
 
 
+const MonitoringStatus = sequelize.define('monitoring_status', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}, 
+    smenaId: {type: DataTypes.STRING}, 
+    messageId: {type: DataTypes.STRING}, 
+})
+
+
 module.exports = {
     Manager,
     Company,
     Message, 
     Distribution,
+    MonitoringStatus,
 }
 

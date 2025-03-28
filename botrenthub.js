@@ -1036,6 +1036,10 @@ bot.on('message', async (msg) => {
                 const sendTextToTelegram = await $host.get(url_send_msg)
                 //console.log("sendTextToTelegram: ", sendTextToTelegram)
 
+                //запросить id смены в таблицу monitoring_status, если нет, то
+                //сохранить id смены в таблицу monitoring_status
+                //иначе получить id сообщения
+
                 //Редактирование отправленного ранее сообщения
                 //const url_edit_msg = `https://api.telegram.org/bot${token}/editMessageText?chat_id=${data.managerId}&message_id=${sendTextToTelegram?.data?.result?.message_id}&parse_mode=html&text=${data.text.replace(/\n/g, '%0A')}`
 
