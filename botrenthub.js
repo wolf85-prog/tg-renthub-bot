@@ -1036,6 +1036,9 @@ bot.on('message', async (msg) => {
                 const sendTextToTelegram = await $host.get(url_send_msg)
                 //console.log("sendTextToTelegram: ", sendTextToTelegram)
 
+                //Редактирование отправленного ранее сообщения
+                //const url_edit_msg = `https://api.telegram.org/bot${token}/editMessageText?chat_id=${data.managerId}&message_id=${sendTextToTelegram?.data?.result?.message_id}&parse_mode=html&text=${data.text.replace(/\n/g, '%0A')}`
+
                 //отправить сообщение в админ-панель
                 const convId = await sendMessageAdmin(data.text, "text", data.managerId, sendTextToTelegram?.data?.result?.message_id)
 
