@@ -41,7 +41,7 @@ app.use('/', router)
 const sequelize = require('./botrenthub/connections/db')
 const sequelizeR = require('./botrenthub/connections/db_renthub')
 const { Op } = require('sequelize')
-const { Message, Manager, Company } = require('./botrenthub/models/models');
+const { Message, Manager, Company, MonitoringStatus } = require('./botrenthub/models/models');
 const { UserBot, ProjectNew, Conversation } = require('./botrenthub/models/modelsP');
 //socket.io
 const {io} = require("socket.io-client")
@@ -1031,33 +1031,49 @@ bot.on('message', async (msg) => {
 
 	if (task === 401) {
             try {
-                const url_send_msg = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${data.managerId}&parse_mode=html&text=${data.text.replace(/\n/g, '%0A')}`
+                    //запросить id смены в таблицу monitoring_status, если нет, то
+                    const userW = await MonitoringStatus.findOne({where:{smenaId: data.shiftId}})
+                            
+                    if (!userW) {
+                        const url_send_msg = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${data.managerId}&parse_mode=html&text=${data.text.replace(/\n/g, '%0A')}`
+                        const sendTextToTelegram = await $host.get(url_send_msg)
+                        //console.log("sendTextToTelegram: ", sendTextToTelegram)
 
-                const sendTextToTelegram = await $host.get(url_send_msg)
-                //console.log("sendTextToTelegram: ", sendTextToTelegram)
+                        //добавление пользователя в БД COMPANYS
+                        const resAddComp = await MonitoringStatus.create({ 
+                            smenaId: data.shiftId,
+                            messageId: sendTextToTelegram?.data?.result?.message_id 
+                        })
+                        console.log('Пользователь добавлен в БД MonitoringStatus', resAddComp)                      
+                                            
+                    } else {
+                        //Редактирование отправленного ранее сообщения
+                        const url_edit_msg = `https://api.telegram.org/bot${token}/editMessageText?chat_id=${data.managerId}&message_id=${userW.dataValues.messageId}&parse_mode=html&text=${data.text.replace(/\n/g, '%0A')}`
+                        console.log("url_edit_msg: ", url_edit_msg)
+                        const sendTextToTelegram = await $host.get(url_edit_msg)
 
-                //запросить id смены в таблицу monitoring_status, если нет, то
-                //сохранить id смены в таблицу monitoring_status
-                //иначе получить id сообщения
+                        console.log('Отмена операции! Пользователь уже существует в MonitoringStatus')
+                    } 
+                    //сохранить id смены в таблицу monitoring_status
+                    //иначе получить id сообщения
+                    
 
-                //Редактирование отправленного ранее сообщения
-                //const url_edit_msg = `https://api.telegram.org/bot${token}/editMessageText?chat_id=${data.managerId}&message_id=${sendTextToTelegram?.data?.result?.message_id}&parse_mode=html&text=${data.text.replace(/\n/g, '%0A')}`
+                    
+                    //отправить сообщение в админ-панель
+                    const convId = await sendMessageAdmin(data.text, "text", data.managerId, sendTextToTelegram?.data?.result?.message_id)
 
-                //отправить сообщение в админ-панель
-                const convId = await sendMessageAdmin(data.text, "text", data.managerId, sendTextToTelegram?.data?.result?.message_id)
+                    socket.emit("sendMessageRent", {
+                        senderId: chatTelegramId,
+                        receiverId: data.managerId,
+                        text: data.text,
+                        convId: convId,
+                        messageId: sendTextToTelegram?.data?.result?.message_id,
+                        replyId: ''
+                    })
 
-                socket.emit("sendMessageRent", {
-                    senderId: chatTelegramId,
-                    receiverId: data.managerId,
-                    text: data.text,
-                    convId: convId,
-                    messageId: sendTextToTelegram?.data?.result?.message_id,
-                    replyId: ''
-                })
-
-            } catch (error) {
-                console.error("Ошибка отправки мониторинга заказчику", error.message)
-            }
+                } catch (error) {
+                    console.error("Ошибка отправки мониторинга заказчику", error.message)
+                }
     }
 }
 
