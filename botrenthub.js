@@ -1033,10 +1033,10 @@ bot.on('message', async (msg) => {
             try {
                     //запросить id смены в таблицу monitoring_status, если нет, то
                     const userW = await MonitoringStatus.findOne({where:{smenaId: data.shiftId}})
-                            
+                    let sendTextToTelegram 
                     if (!userW) {
                         const url_send_msg = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${data.managerId}&parse_mode=html&text=${data.text.replace(/\n/g, '%0A')}`
-                        const sendTextToTelegram = await $host.get(url_send_msg)
+                        sendTextToTelegram = await $host.get(url_send_msg)
                         //console.log("sendTextToTelegram: ", sendTextToTelegram)
 
                         //добавление пользователя в БД COMPANYS
@@ -1050,7 +1050,7 @@ bot.on('message', async (msg) => {
                         //Редактирование отправленного ранее сообщения
                         const url_edit_msg = `https://api.telegram.org/bot${token}/editMessageText?chat_id=${data.managerId}&message_id=${userW.dataValues.messageId}&parse_mode=html&text=${data.text.replace(/\n/g, '%0A')}`
                         console.log("url_edit_msg: ", url_edit_msg)
-                        const sendTextToTelegram = await $host.get(url_edit_msg)
+                        sendTextToTelegram = await $host.get(url_edit_msg)
 
                         console.log('Отмена операции! Пользователь уже существует в MonitoringStatus')
                     } 
