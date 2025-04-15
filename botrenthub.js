@@ -52,6 +52,7 @@ let socket = io(socketUrl);
 const sendMyMessage = require('./botrenthub/common/sendMyMessage');
 const addMainSpec = require("./botrenthub/common/addMainSpec");
 const sendMessageAdmin = require('./botrenthub/common/sendMessageAdmin')
+const editMessageAdmin = require('./botrenthub/common/editMessageAdmin')
 const getReports = require('./botrenthub/common/getReports')
 
 const {managerNotion} = require('./botrenthub/data/managerNotion')
@@ -1044,7 +1045,19 @@ bot.on('message', async (msg) => {
                             smenaId: data.shiftId,
                             messageId: sendTextToTelegram?.data?.result?.message_id 
                         })
-                        console.log('Пользователь добавлен в БД MonitoringStatus', resAddComp)                      
+                        console.log('Пользователь добавлен в БД MonitoringStatus', resAddComp)    
+                        
+                        //отправить сообщение в админ-панель
+                        const convId = await sendMessageAdmin(data.text, "text", data.managerId, sendTextToTelegram?.data?.result?.message_id)
+
+                        socket.emit("sendMessageRent", {
+                            senderId: chatTelegramId,
+                            receiverId: data.managerId,
+                            text: data.text,
+                            convId: convId,
+                            messageId: sendTextToTelegram?.data?.result?.message_id,
+                            replyId: ''
+                        })
                                             
                     } else {
                         //Редактирование отправленного ранее сообщения
@@ -1053,20 +1066,22 @@ bot.on('message', async (msg) => {
                         sendTextToTelegram = await $host.get(url_edit_msg)
 
                         console.log('Отмена операции! Пользователь уже существует в MonitoringStatus')
+
+                        //обновить сообщение в админ-панеле
+                        const convId = await editMessageAdmin(data.text, data.managerId, sendTextToTelegram?.data?.result?.message_id)
+
+                        // socket.emit("editMessageRent", {
+                        //     senderId: chatTelegramId,
+                        //     receiverId: data.managerId,
+                        //     text: data.text,
+                        //     convId: convId,
+                        //     messageId: sendTextToTelegram?.data?.result?.message_id,
+                        //     replyId: ''
+                        // })
                     } 
                     
                     
-                    //отправить сообщение в админ-панель
-                    const convId = await sendMessageAdmin(data.text, "text", data.managerId, sendTextToTelegram?.data?.result?.message_id)
-
-                    socket.emit("sendMessageRent", {
-                        senderId: chatTelegramId,
-                        receiverId: data.managerId,
-                        text: data.text,
-                        convId: convId,
-                        messageId: sendTextToTelegram?.data?.result?.message_id,
-                        replyId: ''
-                    })
+                    
 
                 } catch (error) {
                     console.error("Ошибка отправки мониторинга заказчику", error.message)
