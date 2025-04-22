@@ -12,6 +12,7 @@ const fetch = require('node-fetch');
 // web-приложение
 const webAppUrl = process.env.WEB_APP_URL;
 const botApiUrl = process.env.REACT_APP_API_URL
+const webAppReytingUrl = process.env.WEB_APP_REYTING_URL;
 
 const express = require('express');
 const cors = require('cors');
@@ -442,6 +443,17 @@ bot.on('message', async (msg) => {
             })
                 
 
+        }
+
+        if (text === '/reytings') {
+            //Привет!
+            await bot.sendMessage(chatId, 'Рейтинги', {
+                reply_markup: ({
+                    inline_keyboard:[
+                        [{text: 'Поехали!', web_app: {url: webAppReytingUrl}}],
+                    ]
+                })
+            })
         }
 
         //------------------------------------------------------------------------------------------------
