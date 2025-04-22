@@ -45,7 +45,7 @@ class PosterController {
 
             // создание базы данных "Основной состав"
             const response2 = await $host.get(url_send_poster);
-
+            console.log("Результат отправки сметы: ", response2)
 
             //сохранение сметы в базе данных
             const convId = await sendMessageAdmin(poster, "image", chatId, response2.data?.result?.message_id, null, false, 'Подтверждаю')
@@ -98,6 +98,7 @@ class PosterController {
 
             // создание базы данных "Основной состав"
             const response2 = await $host.get(url_send_poster);
+            console.log("Результат отправки сметы: ", response2)
 
             //console.log("messageId: ", response2)
 

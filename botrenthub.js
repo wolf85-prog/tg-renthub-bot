@@ -390,8 +390,9 @@ bot.on('message', async (msg) => {
                         const url_send_poster = `https://api.telegram.org/bot${token}/sendDocument?chat_id=${chatId}&document=${poster}`
                         console.log(url_send_poster)
             
-                        // создание базы данных "Основной состав"
+                        // 
                         const response2 = await $host.get(url_send_poster);
+                        console.log("Результат отправки постера: ", response2)
             
             
                         //сохранение сметы в базе данных
