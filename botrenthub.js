@@ -729,13 +729,20 @@ bot.on('message', async (msg) => {
                 //     chatId: chatId
                 // })
 
+                const d = new Date(dateStart);
+                const year = d.getFullYear();
+                const month = String(d.getMonth()+1).padStart(2, "0");
+                const day = String(d.getDate()).padStart(2, "0");
+                const chas = d.getHours();
+                const minut = String(d.getMinutes()).padStart(2, "0");
+
                 const obj = {                
                     crmID: resid.toString(),
                     name: projectName,
                     status: 'Новый',
                     //specifika: '',
                     //city: '',
-                    dateStart: dateStart + ':00.000Z',  
+                    dateStart: `${year}-${month}-${day}T${chas}:${minut}:00.000Z`,  
                     //dateEnd: project?.dateend, 
                     teh: Teh,
                     geo: Geo,
