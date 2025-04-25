@@ -196,7 +196,7 @@ ${worklist.map(item => ' - ' + item.spec + ' = ' + item.count + ' чел.').join
 //-----------------------------------------------------------------------------------------
 
 bot.on('message', async (msg) => {
-    console.log("msg: ", msg)
+    //console.log("msg: ", msg)
     const chatId = msg.chat.id;
     const firstname = msg.from.first_name ? msg.from.first_name : ''
     const lastname = msg.from.last_name ? msg.from.last_name : ''
@@ -446,7 +446,7 @@ bot.on('message', async (msg) => {
 
         }
 
-        if (text === '/reytings') {
+        if (text.startsWith('/ray')) {
             const projectId = text.split(' * ');
             console.log(projectId[1])
 
