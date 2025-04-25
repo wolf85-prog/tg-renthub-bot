@@ -743,7 +743,7 @@ bot.on('message', async (msg) => {
                     crmID: resid.toString(),
                     name: projectName,
                     status: 'Новый',
-                    specifika: 'Стандарт',
+                    specifika: '',
                     start: '120 минут',
                     dateStart: `${year}-${month}-${day}T${chas}:${minut}:00.000Z`,  
                     //dateEnd: project?.dateend, 
