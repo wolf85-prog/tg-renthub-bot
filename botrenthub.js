@@ -447,11 +447,14 @@ bot.on('message', async (msg) => {
         }
 
         if (text === '/reytings') {
+            const projectId = text.split(' * ');
+            console.log(projectId[1])
+
             //Привет!
             await bot.sendMessage(chatId, 'Рейтинги', {
                 reply_markup: ({
                     inline_keyboard:[
-                        [{text: 'Поехали!', web_app: {url: webAppReytingUrl}}],
+                        [{text: 'Поехали!', web_app: {url: webAppReytingUrl + `/${projectId[1]}`}}],
                     ]
                 })
             })
