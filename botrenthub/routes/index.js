@@ -21,7 +21,7 @@ const posterController = require('../controllers/posterController')
 // router.get("/projectsnewcash", projectController.projectsNewCash)
 // router.get("/projectsallnotion", projectController.projectsAllNotion);
 
-router.get("/reytings", managerController.getWorkerReyting);
+router.post("/reytings", managerController.getWorkerReyting);
 
 //get MANAGERS
 router.get("/managers", managerController.managers);                // все менеджеры с краткой информацией

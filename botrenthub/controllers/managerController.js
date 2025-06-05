@@ -486,11 +486,14 @@ ${avatar}`
 
     //получить данные менеджера по его tgID
     async getWorkerReyting() {
+        const {reyting, projectname} = req.body;
+
         console.log("-------------------------------------------------------")
         console.log("--------------------Новый рейтинг-----------------------")
         console.log("-------------------------------------------------------")
-        console.log("TelegramID: ")
-        console.log("WorkerId: ")
+        console.log("ProjectName: ", projectname)
+        console.log("WorkerId: ", reyting)
+        console.log("Reyting: ", reyting)
     }
 
     
