@@ -192,10 +192,10 @@ ${worklist.map(item => ' - ' + item.spec + ' = ' + item.count + ' чел.').join
 })
 
 //отправка рейтинга в профиль специалиста
-app.post('/web-reyting', async (req, res) => {
-    const {reyting, projectname, workerId} = req.body;
-    console.log("res reyting: ", reyting, projectname, workerId)
-})
+// app.post('/web-reyting', async (req, res) => {
+//     const {reyting, projectname, workerId} = req.body;
+//     console.log("res reyting: ", reyting, projectname, workerId)
+// })
 
 //-----------------------------------------------------------------------------------------
 // START (обработка команд и входящих сообщени от пользователя)

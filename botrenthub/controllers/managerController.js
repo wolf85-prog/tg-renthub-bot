@@ -483,6 +483,17 @@ ${avatar}`
             return res.status(500).json(error.message);
         }
     }
+
+    //получить данные менеджера по его tgID
+    async getWorkerReyting() {
+        console.log("-------------------------------------------------------")
+        console.log("--------------------Новый рейтинг-----------------------")
+        console.log("-------------------------------------------------------")
+        console.log("TelegramID: ")
+        console.log("WorkerId: ")
+    }
+
+    
 }
 
 
