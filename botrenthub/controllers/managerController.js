@@ -496,6 +496,8 @@ ${avatar}`
         console.log("Reyting: ", reyting)
         console.log("Comteg: ", comteg)
         console.log("Comment: ", comment)
+
+        res.json({});
     }
 
     
