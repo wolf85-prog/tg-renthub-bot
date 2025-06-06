@@ -518,7 +518,7 @@ ${avatar}`
             let commentArr2 = []
             
             const obj2 = {
-                content: comment + '| Рейтинг: ' + reyting + ' | Проект ID: ' + projectname + '\n',
+                content: comment + ' ' + '| Рейтинг: ' + reyting + ' | Проект ID: ' + projectname + '\n',
             }
 
             commentArr2 = JSON.parse(spec.comment2)
