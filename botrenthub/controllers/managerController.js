@@ -8,6 +8,8 @@ const token = process.env.TELEGRAM_API_TOKEN
 
 const { Manager } = require('../models/models')
 
+const { Specialist } = require('../models/modelsP')
+
 const axios = require("axios");
 
 //socket.io
@@ -497,7 +499,43 @@ ${avatar}`
         console.log("Comteg: ", comteg)
         console.log("Comment: ", comment)
 
-        res.json({});
+        
+
+        try {    
+            let spec = await Specialist.findOne( {where: {id: workerId}} )
+
+            //комтег 2
+            let comtegArr2 = []
+            
+            const obj1 = {
+                name: comteg,
+            }
+
+            comtegArr2 = JSON.parse(spec.comteg2)
+            comtegArr2.push(obj1)
+
+            //комментарии 2
+            let commentArr2 = []
+            
+            const obj2 = {
+                content: comment + '| Рейтинг: ' + reyting + ' | Проект ID: ' + projectname + '\n',
+            }
+
+            commentArr2 = JSON.parse(spec.comment2)
+            commentArr2.push(obj2)
+
+            const editUser = await Specialist.update(
+                { 
+                    comteg2: JSON.stringify(comtegArr2),
+                    comment2: JSON.stringify(commentArr2),
+
+                },
+                { where: {id: workerId} })
+            return res.status(200).json(editUser);
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+
     }
 
     
