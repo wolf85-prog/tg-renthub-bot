@@ -522,11 +522,13 @@ ${avatar}`
             commentArr2 = JSON.parse(spec.comment2)
             commentArr2.unshift(obj2)
 
+            const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n' + spec.projects
+
             const editUser = await Specialist.update(
                 { 
                     comteg2: JSON.stringify(comtegArr2),
                     comment2: JSON.stringify(commentArr2),
-
+                    projects: strProjects,
                 },
                 { where: {id: workerId} })
             return res.status(200).json(editUser);
