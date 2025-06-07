@@ -488,12 +488,12 @@ ${avatar}`
 
     //получить данные менеджера по его tgID
     async getWorkerReyting(req, res) {
-        const {reyting, projectname, workerId, comment, comteg} = req.body;
+        const {reyting, projectname, projectdata, workerId, comment, comteg} = req.body;
 
         console.log("-------------------------------------------------------")
         console.log("--------------------Новый рейтинг-----------------------")
         console.log("-------------------------------------------------------")
-        console.log("ProjectName: ", projectname)
+        console.log("ProjectName: ", projectname, projectdata)
         console.log("WorkerId: ", workerId)
         console.log("Reyting: ", reyting)
         console.log("Comteg: ", comteg)
@@ -505,24 +505,22 @@ ${avatar}`
             let spec = await Specialist.findOne( {where: {id: workerId}} )
 
             //комтег 2
-            let comtegArr2 = []
-            
+            let comtegArr2 = []           
             const obj1 = {
                 name: comteg,
             }
-
             comtegArr2 = JSON.parse(spec.comteg2)
             comtegArr2.push(obj1)
 
-            //комментарии 2
-            let commentArr2 = []
-            
-            const obj2 = {
-                content: comment + ' ' + '| Рейтинг: ' + reyting + ' | Проект ID: ' + projectname + '\n',
-            }
 
+            //комментарии 2
+            let commentArr2 = [] 
+            const obj2 = {
+                //content: '❌' + '| Рейтинг: ' + reyting + ' | Проект ID: ' + projectname + '\n' + comment,
+                content: '❌ ' + projectdata + ' | Проект: ' + projectname + comment + '\n',
+            }
             commentArr2 = JSON.parse(spec.comment2)
-            commentArr2.push(obj2)
+            commentArr2.unshift(obj2)
 
             const editUser = await Specialist.update(
                 { 
