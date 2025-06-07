@@ -522,7 +522,7 @@ ${avatar}`
             commentArr2 = JSON.parse(spec.comment2)
             commentArr2.unshift(obj2)
 
-            const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n' + spec.projects
+            const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n' + spec.projects !== null ? spec.projects : ''
 
             const editUser = await Specialist.update(
                 { 
