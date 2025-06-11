@@ -517,12 +517,12 @@ ${avatar}`
             let commentArr2 = [] 
             const obj2 = {
                 //content: '❌' + '| Рейтинг: ' + reyting + ' | Проект ID: ' + projectname + '\n' + comment,
-                content: '❌ ' + projectdata?.split('T')[0] + ' | Проект: ' + projectname + ' - ' + comment,
+                content: '❌ ' + projectdata?.split('T')[0] + ' | ' + projectname + ' - ' + comment + '\n',
             }
             commentArr2 = JSON.parse(spec.comment2)
             commentArr2.unshift(obj2)
 
-            const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n' + spec.projects !== null ? spec.projects : ''
+            const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n' + spec.projects !== null || spec.projects !== '' ? spec.projects : ''
 
             const editUser = await Specialist.update(
                 { 
