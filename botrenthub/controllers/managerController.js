@@ -492,7 +492,7 @@ ${avatar}`
 
         try {    
             let spec = await Specialist.findOne( {where: {id: workerId}} )
-            console.log("spec: ", spec)
+            //console.log("spec: ", spec)
 
             //комтег 2
             let comtegArr2 = []           
@@ -512,7 +512,7 @@ ${avatar}`
             commentArr2 = JSON.parse(spec.comment2)
             commentArr2.unshift(obj2)
 
-            const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n' + spec?.projects ? spec.projects : ''
+            const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n' + spec.dataValues.projects ? spec.dataValues.projects : ''
 
 
             console.log("-------------------------------------------------------")
