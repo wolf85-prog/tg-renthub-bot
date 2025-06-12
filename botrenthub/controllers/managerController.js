@@ -488,18 +488,7 @@ ${avatar}`
 
     //получить данные менеджера по его tgID
     async getWorkerReyting(req, res) {
-        const {reyting, projectname, projectdata, workerId, comment, comteg} = req.body;
-
-        console.log("-------------------------------------------------------")
-        console.log("--------------------Новый рейтинг-----------------------")
-        console.log("-------------------------------------------------------")
-        console.log("ProjectName: ", projectname, projectdata)
-        console.log("WorkerId: ", workerId)
-        console.log("Reyting: ", reyting)
-        console.log("Comteg: ", comteg)
-        console.log("Comment: ", comment)
-
-        
+        const {reyting, projectname, projectdata, workerId, comment, comteg} = req.body; 
 
         try {    
             let spec = await Specialist.findOne( {where: {id: workerId}} )
@@ -523,6 +512,16 @@ ${avatar}`
             commentArr2.unshift(obj2)
 
             const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n' + spec.projects !== null ? spec.projects : ''
+
+
+            console.log("-------------------------------------------------------")
+            console.log("--------------------Новый рейтинг-----------------------")
+            console.log("-------------------------------------------------------")
+            console.log("ProjectName: ", projectname, projectdata)
+            console.log("WorkerId: ", workerId)
+            console.log("Reyting: ", strProjects)
+            console.log("Comteg: ", comteg)
+            console.log("Comment: ", comment)
 
             const editUser = await Specialist.update(
                 { 
