@@ -512,7 +512,16 @@ ${avatar}`
             commentArr2 = JSON.parse(spec.comment2)
             commentArr2.unshift(obj2)
 
-            const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n' + spec.dataValues.projects ? spec.dataValues.projects : ''
+
+            //
+            let projectArr = [] 
+            const obj3 = {
+                content: projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n',
+            }
+            projectArr = JSON.parse(spec.projects)
+            projectArr.unshift(obj3)
+
+            const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting;
 
 
             console.log("-------------------------------------------------------")
@@ -520,7 +529,7 @@ ${avatar}`
             console.log("-------------------------------------------------------")
             console.log("ProjectName: ", projectname, projectdata)
             console.log("WorkerId: ", workerId)
-            console.log("Reyting: ", strProjects)
+            console.log("Reyting: ", reyting)
             console.log("Comteg: ", comteg)
             console.log("Comment: ", comment)
 
