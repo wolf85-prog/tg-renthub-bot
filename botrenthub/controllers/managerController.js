@@ -514,12 +514,12 @@ ${avatar}`
 
 
             //проекты
-            // let projectArr = [] 
-            // const obj3 = {
-            //     content: projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n',
-            // }
-            // projectArr = JSON.parse(spec.projects)
-            // projectArr.unshift(obj3)
+            let projectArr = [] 
+            const obj3 = {
+                content: projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n',
+            }
+            projectArr = JSON.parse(spec.projects)
+            projectArr.unshift(obj3)
 
             //const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting;
 
@@ -529,7 +529,7 @@ ${avatar}`
             console.log("-------------------------------------------------------")
             console.log("ProjectName: ", projectname, projectdata)
             console.log("WorkerId: ", workerId)
-            console.log("Reyting: ", reyting)
+            console.log("Reyting: ", JSON.stringify(projectArr))
             console.log("Comteg: ", comteg)
             console.log("Comment: ", comment)
 
