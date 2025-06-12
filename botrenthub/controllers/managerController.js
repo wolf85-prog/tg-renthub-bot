@@ -521,7 +521,7 @@ ${avatar}`
             projectArr = JSON.parse(spec.projects)
             projectArr.unshift(obj3)
 
-            const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting;
+            //const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting;
 
 
             console.log("-------------------------------------------------------")
@@ -537,7 +537,7 @@ ${avatar}`
                 { 
                     comteg2: JSON.stringify(comtegArr2),
                     comment2: JSON.stringify(commentArr2),
-                    projects: strProjects,
+                    projects: JSON.stringify(projectArr),
                 },
                 { where: {id: workerId} })
             return res.status(200).json(editUser);
