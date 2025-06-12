@@ -513,13 +513,13 @@ ${avatar}`
             commentArr2.unshift(obj2)
 
 
-            //
-            let projectArr = [] 
-            const obj3 = {
-                content: projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n',
-            }
-            projectArr = JSON.parse(spec.projects)
-            projectArr.unshift(obj3)
+            //проекты
+            // let projectArr = [] 
+            // const obj3 = {
+            //     content: projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n',
+            // }
+            // projectArr = JSON.parse(spec.projects)
+            // projectArr.unshift(obj3)
 
             //const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting;
 
@@ -537,7 +537,7 @@ ${avatar}`
                 { 
                     comteg2: JSON.stringify(comtegArr2),
                     comment2: JSON.stringify(commentArr2),
-                    projects: JSON.stringify(projectArr),
+                    //projects: JSON.stringify(projectArr),
                 },
                 { where: {id: workerId} })
             return res.status(200).json(editUser);
