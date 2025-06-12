@@ -537,7 +537,7 @@ ${avatar}`
                 { 
                     comteg2: JSON.stringify(comtegArr2),
                     comment2: JSON.stringify(commentArr2),
-                    //projects: JSON.stringify(projectArr),
+                    projects: JSON.stringify(projectArr),
                 },
                 { where: {id: workerId} })
             return res.status(200).json(editUser);
