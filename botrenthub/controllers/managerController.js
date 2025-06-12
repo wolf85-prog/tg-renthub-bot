@@ -499,7 +499,7 @@ ${avatar}`
             const obj1 = {
                 name: comteg,
             }
-            comtegArr2 = JSON.parse(spec.comteg2)
+            comtegArr2 = spec.comteg2 ? JSON.parse(spec.comteg2) : []
             comtegArr2.push(obj1)
 
 
@@ -509,7 +509,7 @@ ${avatar}`
                 //content: '❌' + '| Рейтинг: ' + reyting + ' | Проект ID: ' + projectname + '\n' + comment,
                 content: '❌ ' + projectdata?.split('T')[0] + ' | ' + projectname + ' - ' + comment + '\n',
             }
-            commentArr2 = JSON.parse(spec.comment2)
+            commentArr2 = spec.comment2 ? JSON.parse(spec.comment2) : []
             commentArr2.unshift(obj2)
 
 
@@ -518,7 +518,7 @@ ${avatar}`
             const obj3 = {
                 content: projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n',
             }
-            projectArr = JSON.parse(spec.projects)
+            projectArr = spec.projects ? JSON.parse(spec.projects) : []
             projectArr.unshift(obj3)
 
             //const strProjects = projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting;
