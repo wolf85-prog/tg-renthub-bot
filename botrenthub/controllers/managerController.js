@@ -547,6 +547,40 @@ ${avatar}`
 
     }
 
+    async getWorkerReytingOnly(req, res) {
+        const {reyting, projectname, projectdata, workerId} = req.body; 
+
+        try {    
+            let spec = await Specialist.findOne( {where: {id: workerId}} )
+            //console.log("spec: ", spec)
+
+
+            //проекты
+            let projectArr = [] 
+            const obj3 = {
+                content: projectdata?.split('T')[0] + ' | ' + projectname + ' | ' + reyting + '\n',
+            }
+            projectArr = spec.projects ? JSON.parse(spec.projects) : []
+            projectArr.unshift(obj3)
+
+            console.log("-------------------------------------------------------")
+            console.log("--------------------Новый рейтинг-----------------------")
+            console.log("-------------------------------------------------------")
+            console.log("ProjectName: ", projectname, projectdata)
+            console.log("WorkerId: ", workerId)
+            console.log("Reyting: ", JSON.stringify(projectArr))
+
+            const editUser = await Specialist.update(
+                { 
+                    projects: JSON.stringify(projectArr),
+                },
+                { where: {id: workerId} })
+            return res.status(200).json(editUser);
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
+
+    }
     
 }
 
