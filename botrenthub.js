@@ -86,7 +86,7 @@ app.post('/web-data', async (req, res) => {
     const year = d.getFullYear();
     const month = String(d.getMonth()+1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
-    const chas = d.getHours();
+    const chas = String(d.getHours()).padStart(2, "0");
     const minut = String(d.getMinutes()).padStart(2, "0");
     try {
         if (worklist.length > 0) {
@@ -153,7 +153,7 @@ app.post('/web-send', async (req, res) => {
     const year = d.getFullYear();
     const month = String(d.getMonth()+1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
-    const chas = d.getHours();
+    const chas = String(d.getHours()).padStart(2, "0");
     const minut = String(d.getMinutes()).padStart(2, "0");
     try {
         if (worklist.length > 0) {
@@ -398,7 +398,7 @@ bot.on('message', async (msg) => {
             
                         // 
                         const response2 = await $host.get(url_send_poster);
-                        console.log("Результат отправки постера: ", response2)
+                        //console.log("Результат отправки постера: ", response2)
             
             
                         //сохранение сметы в базе данных
@@ -742,7 +742,7 @@ bot.on('message', async (msg) => {
                 const year = d.getFullYear();
                 const month = String(d.getMonth()+1).padStart(2, "0");
                 const day = String(d.getDate()).padStart(2, "0");
-                const chas = d.getHours();
+                const chas = String(d.getHours()).padStart(2, "0");
                 const minut = String(d.getMinutes()).padStart(2, "0");
 
                 const obj = {                
