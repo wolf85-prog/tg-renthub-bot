@@ -381,7 +381,7 @@ bot.on('message', async (msg) => {
 
                         //Выводим сообщение об успешном удалении
                         if (delToTelegram) {
-                            console.log('Ваше сообщение удалено из телеграм! ', delToTelegram);	
+                            console.log('Ваше сообщение удалено из телеграм! ', delToTelegram?.statusText, i);	
                             setVisibleDelMess(true) //показать сообщение об отправке
                         }           
                         else {
@@ -389,7 +389,7 @@ bot.on('message', async (msg) => {
                             console.log('Что-то пошло не так. Попробуйте ещё раз.');
                         }
     
-                    }, 1000 * ++index) 
+                    }, 5000 * ++index) 
                     
                 }       
             })
