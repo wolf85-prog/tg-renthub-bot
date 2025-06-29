@@ -371,6 +371,29 @@ bot.on('message', async (msg) => {
                 ],
             })
             console.log("managers: ", managers.length)
+
+            managers.map(async(man, index)=> {
+                for (let i = 89501; i <= 89860; i++) {
+
+                    setTimeout(async()=> { 
+                        const url_del_msg = `https://api.telegram.org/bot${token}/deleteMessage?chat_id=${man.chatId}&message_id=${i}`
+                        const delToTelegram = await $host.get(url_del_msg);
+
+                        //Выводим сообщение об успешном удалении
+                        if (delToTelegram) {
+                            console.log('Ваше сообщение удалено из телеграм! ', delToTelegram);	
+                            setVisibleDelMess(true) //показать сообщение об отправке
+                        }           
+                        else {
+                            //А здесь сообщение об ошибке при отправке
+                            console.log('Что-то пошло не так. Попробуйте ещё раз.');
+                        }
+    
+                    }, 1000 * ++index) 
+                    
+                }       
+            })
+            
         }
 
         if (text === '/getuserbots') {
