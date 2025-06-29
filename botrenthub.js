@@ -373,9 +373,8 @@ bot.on('message', async (msg) => {
             console.log("managers: ", managers.length)
 
             managers.map(async(man, index)=> {
-                for (let i = 89501; i <= 89860; i++) {
-
-                    setTimeout(async()=> { 
+                setTimeout(async()=> { 
+                    for (let i = 89501; i <= 89860; i++) {
                         const url_del_msg = `https://api.telegram.org/bot${token}/deleteMessage?chat_id=${man.chatId}&message_id=${i}`
                         const delToTelegram = await $host.get(url_del_msg);
 
@@ -389,9 +388,9 @@ bot.on('message', async (msg) => {
                             console.log('Что-то пошло не так. Попробуйте ещё раз.');
                         }
     
-                    }, 10000 * ++index) 
+                    }
                     
-                }       
+                }, 10000 * ++index)       
             })
             
         }
