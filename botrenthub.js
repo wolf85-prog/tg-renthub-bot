@@ -375,18 +375,24 @@ bot.on('message', async (msg) => {
             managers.map(async(man, index)=> {
                 setTimeout(async()=> { 
                     for (let i = 89501; i <= 89860; i++) {
-                        const url_del_msg = `https://api.telegram.org/bot${token}/deleteMessage?chat_id=${man.chatId}&message_id=${i}`
-                        const delToTelegram = await $host.get(url_del_msg);
+                        console.log("i: ", i, man.chatId)
+                        try {
+                            const url_del_msg = `https://api.telegram.org/bot${token}/deleteMessage?chat_id=${man.chatId}&message_id=${i}`
+                            const delToTelegram = await $host.get(url_del_msg);
 
-                        //Выводим сообщение об успешном удалении
-                        if (delToTelegram) {
-                            console.log('Ваше сообщение удалено из телеграм! ', delToTelegram?.statusText, i);	
-                            setVisibleDelMess(true) //показать сообщение об отправке
-                        }           
-                        else {
-                            //А здесь сообщение об ошибке при отправке
-                            console.log('Что-то пошло не так. Попробуйте ещё раз.');
+                            //Выводим сообщение об успешном удалении
+                            if (delToTelegram) {
+                                console.log('Ваше сообщение удалено из телеграм! ', delToTelegram?.statusText, i);	
+                                setVisibleDelMess(true) //показать сообщение об отправке
+                            }           
+                            else {
+                                //А здесь сообщение об ошибке при отправке
+                                console.log('Что-то пошло не так. Попробуйте ещё раз.');
+                            }
+                        } catch (err) {
+                            console.error(err.message, i, man.chatId)
                         }
+                        
     
                     }
                     
