@@ -364,6 +364,15 @@ bot.on('message', async (msg) => {
             }
         }
 
+        if (text === '/delspam') {
+            const managers = await Manager.findAll({
+                order: [
+                    ['id', 'DESC'], //DESC, ASC
+                ],
+            })
+            console.log("managers: ", managers.length)
+        }
+
         if (text === '/getuserbots') {
             try {
                 const response = await axios.get(``)
